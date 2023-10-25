@@ -36,7 +36,6 @@ class JoinActivity : AppCompatActivity() {
         binding = ActivityJoinBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         setUpListeners()
     }
 
@@ -50,27 +49,22 @@ class JoinActivity : AppCompatActivity() {
                     etAboutMe.text.toString()
                 )
                 if (check.fail) notifyInvalidCredentials(check.msg)
-                else navigateBackWithResult(User(etUsername.text.toString(), etEmail.text.toString(),etPassword.text.toString(), etAboutMe.text.toString()))
+                else navigateToHomeActivity(User(etUsername.text.toString(),
+                    etEmail.text.toString(),etPassword.text.toString(), etAboutMe.text.toString()),check.msg)
 
             }
             btnLogin.setOnClickListener {
-                //Navigation to login activity
+                //TODO: Navigate to LoginActivity
             }
             ivProfilePicture.setOnClickListener {
-
+                //TODO: Select a profile picture
             }
+
         }
     }
 
-    private fun navigateBackWithResult(user: User) {
-        val intent = Intent().apply {
-            putExtra(USERNAME,user.username)
-            putExtra(EMAIL,user.email)
-            putExtra(PASS,user.password)
-            putExtra(ABOUT,user.about)
-        }
-        setResult(RESULT_OK, intent)
-        finish()
+    private fun navigateToHomeActivity(user: User, msg: String) {
+        //TODO: Navigate to HomeActivity
     }
 
     private fun notifyInvalidCredentials(msg: String) {
