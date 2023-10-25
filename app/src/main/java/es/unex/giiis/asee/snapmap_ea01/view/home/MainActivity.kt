@@ -26,6 +26,8 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    // Comentario
+
     // fun setUpUI(user: User) cabecera para cuando tengamos login
     fun setUpUI() {
 
