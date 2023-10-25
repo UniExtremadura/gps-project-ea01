@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">SnapMap_ea01</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="home_option">Home</string>
+    <string name="search_option">Search</string>
+    <string name="camera_option">Camera</string>
+    <string name="profile_option">Profile</string>
+
 </resources>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_home"
+        android:enabled="true"
+        android:icon="@drawable/baseline_map_24"
+        android:title="@string/home_option"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_search"
+        android:enabled="true"
+        android:icon="@drawable/outline_search_24"
+        android:title="@string/search_option"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_camera"
+        android:enabled="true"
+        android:icon="@drawable/outline_camera_24"
+        android:title="@string/camera_option"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_profile"
+        android:enabled="true"
+        android:icon="@drawable/baseline_person_24"
+        android:title="@string/profile_option"
+        app:showAsAction="ifRoom" />
+</menu>
