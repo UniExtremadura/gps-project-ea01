@@ -6,4 +6,7 @@
     <string name="email">Email</string>
     <string name="about_me">About Me</string>
     <string name="username">Username</string>
+    <string name="login">Login </string>
+    <string name="bienvenido">Bienvenido a SnapMap</string>
+    />
 </resources>
