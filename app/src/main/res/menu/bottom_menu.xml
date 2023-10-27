@@ -2,25 +2,25 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_home"
+        android:id="@+id/homeFragment"
         android:enabled="true"
         android:icon="@drawable/baseline_map_24"
         android:title="@string/home_option"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/action_search"
+        android:id="@+id/searchFragment"
         android:enabled="true"
         android:icon="@drawable/outline_search_24"
         android:title="@string/search_option"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/action_camera"
+        android:id="@+id/cameraFragment"
         android:enabled="true"
         android:icon="@drawable/outline_camera_24"
         android:title="@string/camera_option"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/action_profile"
+        android:id="@+id/profileFragment"
         android:enabled="true"
         android:icon="@drawable/baseline_person_24"
         android:title="@string/profile_option"
