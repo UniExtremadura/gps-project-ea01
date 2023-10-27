@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import es.unex.giiis.asee.snapmap_ea01.databinding.ActivityJoinBinding
 import es.unex.giiis.asee.snapmap_ea01.model.User
 import es.unex.giiis.asee.snapmap_ea01.utils.CredentialCheck
+import es.unex.giiis.asee.snapmap_ea01.view.home.HomeActivity
 
 
 class JoinActivity : AppCompatActivity() {
@@ -55,6 +56,8 @@ class JoinActivity : AppCompatActivity() {
             }
             btnLogin.setOnClickListener {
                 //TODO: Navigate to LoginActivity
+                intent = Intent(this@JoinActivity, LoginActivity::class.java)
+                startActivity(intent)
             }
             ivProfilePicture.setOnClickListener {
                 //TODO: Select a profile picture
@@ -64,8 +67,7 @@ class JoinActivity : AppCompatActivity() {
     }
 
     private fun navigateToHomeActivity(user: User, msg: String) {
-        //TODO: Navigate to HomeActivity
-        ProfileActivity.start(this, user)
+        HomeActivity.start(this, user)
     }
 
     private fun notifyInvalidCredentials(msg: String) {
