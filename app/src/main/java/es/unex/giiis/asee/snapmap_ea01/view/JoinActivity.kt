@@ -49,8 +49,8 @@ class JoinActivity : AppCompatActivity() {
                     etAboutMe.text.toString()
                 )
                 if (check.fail) notifyInvalidCredentials(check.msg)
-                else navigateToHomeActivity(User(etUsername.text.toString(),
-                    etEmail.text.toString(),etPassword.text.toString(), etAboutMe.text.toString()),check.msg)
+                else navigateToHomeActivity(User(etUsername.text.toString(), etAboutMe.text.toString(),
+                    etEmail.text.toString(),etPassword.text.toString()),check.msg)
 
             }
             btnLogin.setOnClickListener {
@@ -65,6 +65,7 @@ class JoinActivity : AppCompatActivity() {
 
     private fun navigateToHomeActivity(user: User, msg: String) {
         //TODO: Navigate to HomeActivity
+        ProfileActivity.start(this, user)
     }
 
     private fun notifyInvalidCredentials(msg: String) {
