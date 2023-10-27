@@ -5,19 +5,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import es.unex.giiis.asee.snapmap_ea01.databinding.FragmentProfileBinding
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import es.unex.giiis.asee.snapmap_ea01.R
 
 class ProfileFragment : Fragment() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private lateinit var binding: FragmentProfileBinding  // Declara una variable de enlace
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false)
+        binding = FragmentProfileBinding.inflate(inflater, container, false)
+        val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+        binding.btnEditProfile.setOnClickListener {
+            navController.navigate(R.id.editProfileFragment)
+        }
+        return binding.root
     }
 }
