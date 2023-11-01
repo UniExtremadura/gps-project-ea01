@@ -67,6 +67,8 @@ class JoinActivity : AppCompatActivity() {
     }
 
     private fun navigateToHomeActivity(user: User, msg: String) {
+
+
         HomeActivity.start(this, user)
     }
 
