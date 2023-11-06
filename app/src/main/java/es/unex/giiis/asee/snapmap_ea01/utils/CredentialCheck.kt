@@ -54,6 +54,11 @@ class CredentialCheck private constructor(){
             else if (aboutMe.isBlank() || aboutMe.length < MINCHARS) checks[4]
             else checks[0]
         }
+
+        fun passwordOk(password: String, password2: String): CredentialCheck {
+            return if(password != password2) checks[2]
+            else checks[0]
+        }
     }
 
     enum class CredentialError {

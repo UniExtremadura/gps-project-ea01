@@ -5,14 +5,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import es.unex.giiis.asee.snapmap_ea01.databinding.FragmentProfileBinding
-import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import es.unex.giiis.asee.snapmap_ea01.R
+import es.unex.giiis.asee.snapmap_ea01.data.model.User
+import es.unex.giiis.asee.snapmap_ea01.databinding.FragmentProfileBinding
+
+private const val USER_INFO = "USER_INFO"
 
 class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding  // Declara una variable de enlace
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -23,5 +29,10 @@ class ProfileFragment : Fragment() {
             navController.navigate(R.id.editProfileFragment)
         }
         return binding.root
+    }
+
+    private fun setUpUI(user: User) {
+        binding.tvUsername.text = user.username
+        binding.tvAboutMe.text = user.aboutMe
     }
 }

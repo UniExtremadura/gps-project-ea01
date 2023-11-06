@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import es.unex.giiis.asee.snapmap_ea01.databinding.ActivityProfileBinding
-import es.unex.giiis.asee.snapmap_ea01.model.User
+import es.unex.giiis.asee.snapmap_ea01.data.model.User
 
 class ProfileActivity : AppCompatActivity() {
 

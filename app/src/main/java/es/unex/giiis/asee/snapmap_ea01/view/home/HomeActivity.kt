@@ -7,8 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import es.unex.giiis.asee.snapmap_ea01.R
+import es.unex.giiis.asee.snapmap_ea01.data.model.User
 import es.unex.giiis.asee.snapmap_ea01.databinding.ActivityHomeBinding
-import es.unex.giiis.asee.snapmap_ea01.model.User
 
 class HomeActivity : AppCompatActivity() {
 
@@ -58,6 +58,7 @@ class HomeActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
 
         binding.bottomNavigation.setupWithNavController(navHostFragment.navController)
+
     }
 
     private fun setUpListeners() {
