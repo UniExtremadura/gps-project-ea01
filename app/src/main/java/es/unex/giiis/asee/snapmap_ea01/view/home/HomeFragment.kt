@@ -2,6 +2,8 @@ package es.unex.giiis.asee.snapmap_ea01.view.home
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,13 +17,10 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import es.unex.giiis.asee.snapmap_ea01.R
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
@@ -40,10 +39,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
     }
 
@@ -90,31 +86,39 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
                     // Mueve la cámara del mapa a la ubicación actual y establece un zoom
                     mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, ZOOM_LEVEL))
+                    mMap?.uiSettings?.isMyLocationButtonEnabled = false
+                    mMap?.isMyLocationEnabled = true
+
                 }
             }
-
             // Habilita la capa de ubicación
-            mMap?.isMyLocationEnabled = true
+
         }
+
+        // Adición de un marcador de prueba
+        val mapMarker = layoutInflater.inflate(R.layout.picture_map_marker, null)
+        val cardView = mapMarker.findViewById<View>(R.id.markerCardView)
+        val bitmap = Bitmap.createScaledBitmap(viewToBitmap(cardView)!!, cardView.width, cardView.height, false)
+        val smallerMarkerIcon = BitmapDescriptorFactory.fromBitmap(bitmap)
+        mMap?.addMarker(
+            MarkerOptions()
+                .position(LatLng(39.46473283509486, -6.38389228558333))
+                .icon(smallerMarkerIcon)
+        )
+
+
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment HomeFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            HomeFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    //Convierte una vista a un bitmap para poder cargarlo en el mapa
+    private fun viewToBitmap (view: View): Bitmap? {
+        view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        val bitmap = Bitmap.createBitmap(view.measuredWidth, view.measuredHeight, Bitmap.Config.ARGB_8888)
+
+        val canvas = Canvas(bitmap)
+        view.layout(0, 0, view.measuredWidth, view.measuredHeight)
+        view.draw(canvas)
+
+        return bitmap
     }
+
 }
