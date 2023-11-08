@@ -24,9 +24,17 @@
         android:id="@+id/profileFragment"
         android:name="es.unex.giiis.asee.snapmap_ea01.view.home.ProfileFragment"
         android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment" />
+    </fragment>
     <fragment
         android:id="@+id/editProfileFragment"
         android:name="es.unex.giiis.asee.snapmap_ea01.view.home.EditProfileFragment"
-        android:label="EditProfileFragment" />
+        android:label="EditProfileFragment" >
+        <action
+            android:id="@+id/action_editProfileFragment_to_profileFragment2"
+            app:destination="@id/profileFragment" />
+    </fragment>
 </navigation>

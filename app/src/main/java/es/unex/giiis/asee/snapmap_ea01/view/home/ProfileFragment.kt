@@ -38,7 +38,7 @@ class ProfileFragment : Fragment() {
         with(binding){
             btnEditProfile.setOnClickListener {
                 val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
-                navController.navigate(R.id.editProfileFragment)
+                navController.navigate(R.id.action_profileFragment_to_editProfileFragment)
             }
             btnLogout.setOnClickListener{
                 val intent = Intent(requireContext(), LoginActivity::class.java)
