@@ -42,11 +42,17 @@ android {
 
 dependencies {
 
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
     val nav_version = "2.7.4"
 
     // Kotlin
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
+
+    // Para usar el Google Maps
+    implementation ("com.google.android.gms:play-services-maps:18.2.0")
+    implementation ("com.google.android.gms:play-services-location:18.0.0")
+
 
     // Feature module Support
     implementation("androidx.navigation:navigation-dynamic-features-fragment:$nav_version")
