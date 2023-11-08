@@ -22,7 +22,7 @@
             android:layout_height="620dp"
             android:src="@drawable/baseline_broken_image_24"
             app:tint="@color/items"
-            app:layout_constraintTop_toTopOf="p"/>
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <LinearLayout
             android:layout_marginTop="30dp"

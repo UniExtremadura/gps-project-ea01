@@ -106,10 +106,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                 .icon(smallerMarkerIcon)
         )
 
-        cardView.setOnClickListener(View.OnClickListener {
-            //TODO: Navegar a la imagen en detalle
-        })
-
     }
 
     //Convierte una vista a un bitmap para poder cargarlo en el mapa
