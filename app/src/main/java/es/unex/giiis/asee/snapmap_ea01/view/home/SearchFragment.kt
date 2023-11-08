@@ -9,7 +9,8 @@ import android.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import es.unex.giiis.asee.snapmap_ea01.data.dummyUsers
 import es.unex.giiis.asee.snapmap_ea01.databinding.FragmentSearchBinding
-import es.unex.giiis.asee.snapmap_ea01.model.User
+import es.unex.giiis.asee.snapmap_ea01.data.model.User
+import es.unex.giiis.asee.snapmap_ea01.database.SnapMapDatabase
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -28,10 +29,14 @@ class SearchFragment : Fragment() {
     private lateinit var adapter: SearchAdapter
     private var filteredUsers = mutableListOf<User>()
 
+    private lateinit var db: SnapMapDatabase
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
         }
+
+        db = SnapMapDatabase.getInstance(requireContext())!!
     }
 
     override fun onCreateView(
@@ -59,10 +64,12 @@ class SearchFragment : Fragment() {
     }
 
     private fun filterUsers(query: String) {
+        //db.userDao().getUsers()
+        //dummyUsers
         filteredUsers.clear()
         if (query.isNotEmpty()) {
-            for (user in dummyUsers) {
-                if (user.name.contains(query, ignoreCase = true)) {
+            for (user in db.userDao().getUsers()) {
+                if (user.username.contains(query, ignoreCase = true)) {
                     filteredUsers.add(user)
                 }
             }

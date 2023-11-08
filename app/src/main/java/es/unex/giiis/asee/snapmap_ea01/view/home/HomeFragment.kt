@@ -2,6 +2,8 @@ package es.unex.giiis.asee.snapmap_ea01.view.home
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,6 +18,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
 import es.unex.giiis.asee.snapmap_ea01.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -62,6 +65,38 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
+        val nightModeFlags = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+
+        if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
+            try {
+                val success = googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                        requireContext(),
+                        R.raw.map_style_dark
+                    )
+                )
+                if (!success) {
+                    // Handle map style load failure here
+                }
+            } catch (e: Resources.NotFoundException) {
+                // Handle exception
+            }
+        } else {
+            try {
+                val success = googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                        requireContext(),
+                        R.raw.map_style_light
+                    )
+                )
+                if (!success) {
+                    // Handle map style load failure here
+                }
+            } catch (e: Resources.NotFoundException) {
+                // Handle exception
+            }
+        }
+
         // Habilita la capa de ubicación para mostrar el punto azul
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
@@ -96,6 +131,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             // Habilita la capa de ubicación
             mMap?.isMyLocationEnabled = true
         }
+
+
     }
 
     companion object {

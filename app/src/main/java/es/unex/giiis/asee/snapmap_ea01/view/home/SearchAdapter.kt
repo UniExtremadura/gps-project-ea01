@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import es.unex.giiis.asee.snapmap_ea01.databinding.SearchListItemBinding
-import es.unex.giiis.asee.snapmap_ea01.model.User
+import es.unex.giiis.asee.snapmap_ea01.data.model.User
 
 class SearchAdapter(
     var users: List<User>,
@@ -17,7 +17,7 @@ class SearchAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(user: User) {
             with(binding) {
-                tVUser.text = user.name
+                tVUser.text = user.username
             }
         }
     }

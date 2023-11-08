@@ -17,7 +17,7 @@
       android:layout_marginTop="144dp"
       android:fontFamily="@font/montserrat_bold"
       android:text="@string/welcome_to_snapmap"
-      android:textColor="@android:color/black"
+      android:textColor="@color/appTitle"
       android:textSize="30sp"
       android:layout_marginStart="32dp"
       android:layout_marginEnd="32dp"
