@@ -81,7 +81,7 @@ class JoinActivity : AppCompatActivity() {
             }
             btnLogin.setOnClickListener {
                 //TODO: Navigate to LoginActivity
-                intent = Intent(this@JoinActivity, LoginActivity::class.java)
+                val intent = Intent(this@JoinActivity, LoginActivity::class.java)
                 startActivity(intent)
             }
             ivProfilePicture.setOnClickListener {

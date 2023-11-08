@@ -7,9 +7,9 @@ import java.io.Serializable
 @Entity
 class User (
     @PrimaryKey(autoGenerate = true) var userId: Long?,
-    val username: String = "",
-    val aboutMe: String = "",
-    val email: String = "",
-    val password: String = ""
+    var username: String = "",
+    var aboutMe: String = "",
+    var email: String = "",
+    var password: String = ""
 
 ) : Serializable
