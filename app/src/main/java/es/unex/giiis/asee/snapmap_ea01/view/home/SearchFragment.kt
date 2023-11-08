@@ -6,9 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
-import androidx.recyclerview.widget.RecyclerView
-import es.unex.giiis.asee.snapmap_ea01.R
+import androidx.recyclerview.widget.LinearLayoutManager
+import es.unex.giiis.asee.snapmap_ea01.data.dummyUsers
 import es.unex.giiis.asee.snapmap_ea01.databinding.FragmentSearchBinding
+import es.unex.giiis.asee.snapmap_ea01.model.User
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,19 +25,12 @@ class SearchFragment : Fragment() {
 
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
-
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    private lateinit var searchView: SearchView
-    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: SearchAdapter
+    private var filteredUsers = mutableListOf<User>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
         }
     }
 
@@ -46,38 +40,47 @@ class SearchFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        binding.sVSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setUpRecyclerView()
+        binding.etSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                // Lógica de búsqueda cuando se presiona Enter en el teclado
                 return false
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                // Lógica de búsqueda en tiempo real mientras se escribe
-                return false
+                filterUsers(newText.orEmpty())
+                return true
             }
         })
-        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SearchFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SearchFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    private fun filterUsers(query: String) {
+        filteredUsers.clear()
+        if (query.isNotEmpty()) {
+            for (user in dummyUsers) {
+                if (user.name.contains(query, ignoreCase = true)) {
+                    filteredUsers.add(user)
                 }
             }
+        }
+        adapter.updateUsers(filteredUsers)
+    }
+
+
+    private fun setUpRecyclerView() {
+        adapter = SearchAdapter(users = mutableListOf(), requireContext())
+        with(binding) {
+            rVSearch.layoutManager = LinearLayoutManager(requireContext())
+            rVSearch.adapter = adapter
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null // avoid memory leaks
     }
 }
