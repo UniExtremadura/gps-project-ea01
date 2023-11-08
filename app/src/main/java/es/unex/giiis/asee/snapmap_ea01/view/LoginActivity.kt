@@ -29,6 +29,7 @@ class LoginActivity : AppCompatActivity() {
     private fun setUpListeners(){
         with(binding) {
             btnLogin.setOnClickListener {
+                /*
                 val check = CredentialCheck.login(
                     etUsername.text.toString(),
                     etPassword.text.toString()
@@ -37,6 +38,8 @@ class LoginActivity : AppCompatActivity() {
                 else {
                     checkLogin()
                 }
+                */
+                navigateToHomeActivity(User(0,"","","",""), "")
             }
             btnRegister.setOnClickListener {
                 intent = Intent(this@LoginActivity, JoinActivity::class.java)
