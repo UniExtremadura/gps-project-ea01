@@ -26,7 +26,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:itemBackground="@color/colorNavBar"
-        app:itemActiveIndicatorStyle="@color/colorNavBarItemSelected"
+        app:itemIconTint="@color/navBarItem"
+        app:itemTextColor="@color/black"
         app:menu="@menu/bottom_menu"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
