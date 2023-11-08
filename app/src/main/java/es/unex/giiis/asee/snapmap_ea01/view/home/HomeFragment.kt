@@ -106,6 +106,9 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                 .icon(smallerMarkerIcon)
         )
 
+        cardView.setOnClickListener(View.OnClickListener {
+            //TODO: Navegar a la imagen en detalle
+        })
 
     }
 

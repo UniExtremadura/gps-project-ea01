@@ -6,5 +6,7 @@
     <string name="search_option">Search</string>
     <string name="camera_option">Camera</string>
     <string name="profile_option">Profile</string>
+    <string name="username">username</string>
+    <string name="from_username">from username</string>
 
 </resources>
