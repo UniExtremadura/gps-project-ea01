@@ -50,34 +50,7 @@ class JoinActivity : AppCompatActivity() {
     private fun setUpListeners(){
         with(binding) {
             btnRegister.setOnClickListener {
-                val check = CredentialCheck.join(
-                    etUsername.text.toString(),
-                    etEmail.text.toString(),
-                    etPassword.text.toString(),
-                    etAboutMe.text.toString()
-                )
-                if (check.fail) notifyInvalidCredentials(check.msg)
-                else {
-                    lifecycleScope.launch {
-                        val user = User(
-                            null,
-                            etUsername.text.toString(),
-                            etAboutMe.text.toString(),
-                            etEmail.text.toString(),
-                            etPassword.text.toString()
-                        )
-                        val id = db.userDao().insertUser(user)
-
-                        navigateToHomeActivity(
-                            User(
-                                id,
-                                etUsername.text.toString(),
-                                etAboutMe.text.toString(),
-                                etEmail.text.toString(),
-                                etPassword.text.toString()),
-                            check.msg)
-                    }
-                }
+                join()
             }
             btnLogin.setOnClickListener {
                 //TODO: Navigate to LoginActivity
@@ -88,6 +61,41 @@ class JoinActivity : AppCompatActivity() {
                 //TODO: Select a profile picture
             }
 
+        }
+    }
+
+    private fun join(){
+        with(binding) {
+            val check = CredentialCheck.join(
+                etUsername.text.toString(),
+                etEmail.text.toString(),
+                etPassword.text.toString(),
+                etAboutMe.text.toString()
+            )
+            if (check.fail) notifyInvalidCredentials(check.msg)
+            else {
+                lifecycleScope.launch {
+                    val user = User(
+                        null,
+                        etUsername.text.toString(),
+                        etAboutMe.text.toString(),
+                        etEmail.text.toString(),
+                        etPassword.text.toString()
+                    )
+                    val id = db.userDao().insertUser(user)
+
+                    navigateToHomeActivity(
+                        User(
+                            id,
+                            etUsername.text.toString(),
+                            etAboutMe.text.toString(),
+                            etEmail.text.toString(),
+                            etPassword.text.toString()
+                        ),
+                        check.msg
+                    )
+                }
+            }
         }
     }
 
