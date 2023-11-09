@@ -1,16 +1,17 @@
 package es.unex.giiis.asee.snapmap_ea01.view.home
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import es.unex.giiis.asee.snapmap_ea01.data.dummyUsers
-import es.unex.giiis.asee.snapmap_ea01.databinding.FragmentSearchBinding
 import es.unex.giiis.asee.snapmap_ea01.data.model.User
 import es.unex.giiis.asee.snapmap_ea01.database.SnapMapDatabase
+import es.unex.giiis.asee.snapmap_ea01.databinding.FragmentSearchBinding
+import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -67,10 +68,12 @@ class SearchFragment : Fragment() {
         //db.userDao().getUsers()
         //dummyUsers
         filteredUsers.clear()
-        if (query.isNotEmpty()) {
-            for (user in db.userDao().getUsers()) {
-                if (user.username.contains(query, ignoreCase = true)) {
-                    filteredUsers.add(user)
+        if(query.isNotEmpty()) {
+            lifecycleScope.launch {
+                for (user in db.userDao().getUsers()) {
+                    if (user.username.contains(query, ignoreCase = true)) {
+                        filteredUsers.add(user)
+                    }
                 }
             }
         }

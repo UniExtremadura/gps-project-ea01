@@ -11,7 +11,7 @@ interface UserDao {
     suspend fun getUser(username: String): User
 
     @Query ("SELECT * FROM user")
-    fun getUsers() : List<User>
+    suspend fun getUsers() : List<User>
 
     @Insert
     suspend fun insertUser(user: User): Long
