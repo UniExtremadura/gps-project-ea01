@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import java.io.Serializable
 
 @Entity
-class User (
+data class User (
     @PrimaryKey(autoGenerate = true) var userId: Long?,
     var username: String = "",
     var aboutMe: String = "",
