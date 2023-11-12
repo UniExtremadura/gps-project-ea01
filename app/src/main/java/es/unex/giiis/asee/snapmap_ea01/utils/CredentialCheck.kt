@@ -55,11 +55,10 @@ class CredentialCheck private constructor(){
             else checks[0]
         }
 
-        fun edit(username: String, email: String, email2: String, password: String, aboutMe: String): CredentialCheck {
+        fun edit(username: String, email: String, password: String, aboutMe: String): CredentialCheck {
             return if (username.isBlank() || username.length < MINCHARS) checks[1]
             else if (password.isBlank() || password.length < MINCHARS) checks[2]
             else if (email.isBlank() || email.length < MINCHARS || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) checks[3]
-            else if (email != email2) checks[3]
             else if (aboutMe.isBlank() || aboutMe.length < MINCHARS) checks[4]
             else checks[0]
         }
