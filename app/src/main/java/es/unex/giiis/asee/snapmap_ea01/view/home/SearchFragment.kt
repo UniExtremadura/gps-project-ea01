@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -60,6 +61,12 @@ class SearchFragment : Fragment() {
             override fun onQueryTextChange(newText: String?): Boolean {
                 filterUsers(newText.orEmpty())
                 return true
+            }
+        })
+
+        adapter.setOnFollowButtonClickListener(object : SearchAdapter.OnFollowButtonClickListener {
+            override fun onFollowButtonClick(user: User) {
+                Toast.makeText(context, user.username, Toast.LENGTH_LONG).show()
             }
         })
     }
