@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import es.unex.giiis.asee.snapmap_ea01.data.model.User
 import es.unex.giiis.asee.snapmap_ea01.database.SnapMapDatabase
+import es.unex.giiis.asee.snapmap_ea01.database.UserDao
 import es.unex.giiis.asee.snapmap_ea01.databinding.ActivityLoginBinding
 import es.unex.giiis.asee.snapmap_ea01.utils.CredentialCheck
 import es.unex.giiis.asee.snapmap_ea01.view.home.HomeActivity
@@ -62,7 +63,7 @@ class LoginActivity : AppCompatActivity() {
         if (!check.fail){
             lifecycleScope.launch{
                 val user =
-                    db?.userDao()?.getUser(binding.etUsername.text.toString())
+                    db?.userDao()?.getUserByUsername(binding.etUsername.text.toString())
                 if (user != null) {
                     val check =
                         CredentialCheck.passwordOk(binding.etPassword.text.toString(),

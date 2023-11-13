@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import es.unex.giiis.asee.snapmap_ea01.data.model.User
 import es.unex.giiis.asee.snapmap_ea01.database.SnapMapDatabase
+import es.unex.giiis.asee.snapmap_ea01.database.UserDao
 import es.unex.giiis.asee.snapmap_ea01.databinding.ActivityJoinBinding
 import es.unex.giiis.asee.snapmap_ea01.utils.CredentialCheck
 import es.unex.giiis.asee.snapmap_ea01.view.home.HomeActivity
@@ -99,5 +100,4 @@ class JoinActivity : AppCompatActivity() {
     private fun notifyInvalidCredentials(msg: String) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
-
 }
