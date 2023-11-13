@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import es.unex.giiis.asee.snapmap_ea01.data.model.User
+import es.unex.giiis.asee.snapmap_ea01.data.model.UserUserFollowRef
 import es.unex.giiis.asee.snapmap_ea01.database.SnapMapDatabase
 import es.unex.giiis.asee.snapmap_ea01.databinding.FragmentSearchBinding
 import kotlinx.coroutines.launch
@@ -66,14 +67,18 @@ class SearchFragment : Fragment() {
 
         adapter.setOnFollowButtonClickListener(object : SearchAdapter.OnFollowButtonClickListener {
             override fun onFollowButtonClick(user: User) {
-                Toast.makeText(context, user.username, Toast.LENGTH_LONG).show()
+                val actualUser = requireActivity().intent.getSerializableExtra(HomeActivity.USER_INFO) as User
+                lifecycleScope.launch {
+                    val userFollowRef = actualUser.userId?.let { UserUserFollowRef(it, user.userId!!) }
+                    if (userFollowRef != null) {
+                        db.userUserFollowRefDao().insertUserUserFollowRef(userFollowRef)
+                    }
+                }
             }
         })
     }
 
     private fun filterUsers(query: String) {
-        //db.userDao().getUsers()
-        //dummyUsers
         filteredUsers.clear()
         if(query.isNotEmpty()) {
             lifecycleScope.launch {
