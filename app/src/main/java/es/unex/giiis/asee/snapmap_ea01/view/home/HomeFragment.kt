@@ -9,8 +9,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -21,6 +26,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import es.unex.giiis.asee.snapmap_ea01.R
+import es.unex.giiis.asee.snapmap_ea01.data.model.Photo
 
 /**
  * A simple [Fragment] subclass.
@@ -28,9 +34,11 @@ import es.unex.giiis.asee.snapmap_ea01.R
  * create an instance of this fragment.
  */
 class HomeFragment : Fragment(), OnMapReadyCallback {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    //List of photos
+    private var _photos: List<Photo> = emptyList()
+
+    //GoogleMaps variables
     private lateinit var mapView: MapView
     private var mMap: GoogleMap? = null
     private val LOCATION_PERMISSION_REQUEST_CODE = 1
@@ -39,7 +47,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
     }
 
@@ -52,7 +59,12 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         mapView = view.findViewById(R.id.mapView)
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this) // Configura el callback OnMapReady
+
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -92,8 +104,12 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                 }
             }
             // Habilita la capa de ubicación
+            mMap?.isMyLocationEnabled = true
 
         }
+
+        getPhotos()
+        setUpPhotos()
 
         // Adición de un marcador de prueba
         val mapMarker = layoutInflater.inflate(R.layout.picture_map_marker, null)
@@ -107,6 +123,57 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         )
 
     }
+
+    private fun getPhotos(){
+
+        //TODO: Change this to get the photos from the database
+        val lat1 = 39.49082391807905
+        val lon1 = -6.4061240044765
+        val lat2 = 39.44995320116261
+        val lon2 = -6.342590539110122
+
+        for (i in 1..10){
+            val lat = (lat1 - lat2) * Math.random() + lat2
+            val lon = (lon1 - lon2) * Math.random() + lon2
+            val photo = Photo("x", lat, lon, 0)
+            _photos += photo
+        }
+    }
+
+    private fun setUpPhotos(){
+        //Coloca las fotos en el mapa
+        for (photo in _photos){
+            val mapMarker = layoutInflater.inflate(R.layout.picture_map_marker, null)
+            val cardView = mapMarker.findViewById<View>(R.id.markerCardView)
+            val username = cardView.findViewById<TextView>(R.id.info_window_title)
+            val imageView = cardView.findViewById<ImageView>(R.id.iVPhoto)
+            username.setText("Jose Luis")
+
+            val imageUrl = "https://s1.ppllstatics.com/lasprovincias/www/multimedia/202112/12/media/cortadas/gatos-kb2-U160232243326NVC-1248x770@Las%20Provincias.jpg"
+
+            // Configuración de opciones de carga
+            val requestOptions = RequestOptions()
+                .placeholder(R.drawable.baseline_thumb_up_24) // Puedes establecer un placeholder mientras se carga la imagen
+                .error(R.drawable.baseline_broken_image_24) // Puedes establecer una imagen de error si la carga falla
+            //TODO: Fix problem with glide
+            Glide.with(this)
+                .load(imageUrl)
+                .apply(requestOptions)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(imageView)
+
+
+
+            val bitmap = Bitmap.createScaledBitmap(viewToBitmap(cardView)!!, cardView.width, cardView.height, false)
+            val smallerMarkerIcon = BitmapDescriptorFactory.fromBitmap(bitmap)
+            mMap?.addMarker(
+                MarkerOptions()
+                    .position(LatLng(photo.lat, photo.lon))
+                    .icon(smallerMarkerIcon)
+            )
+        }
+    }
+
 
     //Convierte una vista a un bitmap para poder cargarlo en el mapa
     private fun viewToBitmap (view: View): Bitmap? {
