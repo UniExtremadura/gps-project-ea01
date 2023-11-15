@@ -106,6 +106,18 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             // Habilita la capa de ubicación
             mMap?.isMyLocationEnabled = true
 
+            mMap?.setOnMarkerClickListener { marker ->
+                val photoId = marker.tag as String?
+
+                // Abrimos el fragmento de imagen pasando la ID de la foto
+                val imageFragment = ImageFragment.newInstance()
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .replace(R.id.nav_host_fragment, imageFragment)
+                    .addToBackStack(null)
+                    .commit()
+
+                true
+            }
         }
 
         getPhotos()

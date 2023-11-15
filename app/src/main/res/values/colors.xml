@@ -4,6 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="backgroundApp">#DED9D9</color>
     <color name="items">#E5792C</color>
+    <color name="like">#FFFF99</color>
     <color name="colorNavBar">#E5792C</color>
     <color name="colorNavBarItemSelected">#eab672</color>
 </resources>

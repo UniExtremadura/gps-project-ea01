@@ -4,31 +4,44 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import es.unex.giiis.asee.snapmap_ea01.R
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ImageFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ImageFragment : Fragment() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_image, container, false)
+        val view = inflater.inflate(R.layout.fragment_image, container, false)
+
+        // Obtenemos la referencia de las ImageView ivLike e ivComment
+        val likeImageView: ImageView = view.findViewById(R.id.ivLike)
+        val commentImageView: ImageView = view.findViewById(R.id.ivComment)
+
+        // Agregamos OnClickListener a la ImageView ivLike
+        likeImageView.setOnClickListener {
+            val newColor = ContextCompat.getColor(requireContext(), R.color.like)
+            likeImageView.setColorFilter(newColor)
+        }
+
+        // Agregamos OnClickListener a la ImageView ivComment
+        commentImageView.setOnClickListener {
+            // Navegamos a CommentsFragment cuando se hace clic en ivComment
+            val commentsFragment = CommentsFragment()
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.nav_host_fragment, commentsFragment)
+                .addToBackStack(null)
+                .commit()
+        }
+        return view
+    }
+
+    companion object {
+        fun newInstance(): ImageFragment {
+            return ImageFragment()
+        }
     }
 }
