@@ -24,7 +24,7 @@ import androidx.room.PrimaryKey
 
 data class Comment(
     @PrimaryKey(autoGenerate = true) var commentId: Long?,
-    val author: Long?,
-    val photo: Long?
+    var author: Long?,
+    var photo: Long?
 )
 

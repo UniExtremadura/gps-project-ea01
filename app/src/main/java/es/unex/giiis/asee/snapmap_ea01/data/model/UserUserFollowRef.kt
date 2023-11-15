@@ -21,6 +21,6 @@ import androidx.room.ForeignKey
 )
 
 data class UserUserFollowRef(
-    val user1: Long,
-    val user2: Long
+    var user1: Long,
+    var user2: Long
 )

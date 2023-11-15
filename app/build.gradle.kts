@@ -50,6 +50,7 @@ dependencies {
 
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("androidx.navigation:navigation-runtime-ktx:2.7.5")
+    implementation("androidx.room:room-common:2.6.0")
     val nav_version = "2.7.4"
 
     val room_version = "2.5.0"

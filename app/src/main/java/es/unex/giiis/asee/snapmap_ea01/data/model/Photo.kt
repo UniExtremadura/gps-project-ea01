@@ -18,6 +18,8 @@ import androidx.room.PrimaryKey
 
 data class Photo(
     @PrimaryKey(autoGenerate = true) var photoId: Long?,
-    val photoURL: String = "",
-    val owner: Long?
+    var photoURL: String = "",
+    var owner: Long?,
+    var lat : Long?,
+    var long : Long?
 )

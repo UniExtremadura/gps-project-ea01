@@ -21,6 +21,6 @@ import androidx.room.ForeignKey
 )
 
 data class UserPhotoLikeRef(
-    val userId: Long,
-    val photoId: Long
+    var userId: Long,
+    var photoId: Long
 )
