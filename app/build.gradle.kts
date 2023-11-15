@@ -43,6 +43,7 @@ android {
 dependencies {
 
     implementation("com.google.android.gms:play-services-maps:18.2.0")
+    implementation("com.google.android.gms:play-services-fido:20.1.0")
     val nav_version = "2.7.4"
 
     // Kotlin
