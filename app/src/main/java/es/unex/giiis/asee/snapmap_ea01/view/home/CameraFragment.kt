@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -29,6 +30,7 @@ import kotlinx.coroutines.launch
  */
 class CameraFragment : Fragment() {
     private var photo = ""
+    private val LOCATION_PERMISSION_REQUEST_CODE = 1
     private lateinit var binding : FragmentCameraBinding
     private lateinit var db: SnapMapDatabase
 
@@ -45,24 +47,24 @@ class CameraFragment : Fragment() {
 
         db = SnapMapDatabase.getInstance(requireContext())!!
 
-        setUpUI()
+        updatePhoto()
         setUpListeners()
 
         return binding.root
     }
 
-    private fun setUpUI() {
+    private fun updatePhoto() {
         with(binding){
             lifecycleScope.launch {
                 try{
                     photo = fetchDog()
-                    Log.d("API", "Duck: $photo")
+                    Log.d("API", "Dog: $photo")
                     Glide.with(requireContext())
                         .load(photo)
                         .placeholder(R.drawable.baseline_access_time_24)
                         .into(iVDog)
                 } catch (e: APIError) {
-                    Log.e("MainActivity", "Error fetching duck", e)
+                    Log.e("MainActivity", "Error fetching dog", e)
                 }
             }
         }
@@ -81,6 +83,10 @@ class CameraFragment : Fragment() {
 
         //Obtain location
         val location = LocationServices.getFusedLocationProviderClient(requireContext())
+
+        var lat: Double = 0.0
+        var long: Double = 0.0
+
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -89,27 +95,35 @@ class CameraFragment : Fragment() {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            return
-        }
+            // Solicitar permisos de ubicación si no están habilitados
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
+        }else{
+            location.lastLocation.addOnSuccessListener {
+                lat = it.latitude
+                long = it.longitude
+            }
 
-        var lat: Double = 0.0
-        var long: Double = 0.0
-        location.lastLocation.addOnSuccessListener {
-            lat = it.latitude
-            long = it.longitude
-        }
+            val photo = Photo(
+                photoId = null,
+                photoURL = photo,
+                owner = user.userId,
+                lat = lat,
+                long = long
+            )
 
-        val photo = Photo(
-            photoId = null,
-            photoURL = photo,
-            owner = user.userId,
-            lat = lat,
-            long = long
-        )
-
-        lifecycleScope.launch {
-            val photoId = db.photoDao().insertPhoto(photo)
-            Log.d("API", "Photo uploaded with id: $photoId")
+            lifecycleScope.launch {
+                val photoId = db.photoDao().insertPhoto(photo)
+                Log.d("API", "Photo uploaded with id: $photoId")
+            }
+            Toast.makeText(requireContext(), "Photo uploaded", Toast.LENGTH_SHORT).show()
+            updatePhoto()
         }
     }
 
