@@ -5,7 +5,6 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 @Entity(
-    primaryKeys = ["photoId"],
     foreignKeys = [
         ForeignKey(
             entity = User::class,
@@ -13,13 +12,14 @@ import androidx.room.PrimaryKey
             childColumns = ["owner"],
             onDelete = ForeignKey.CASCADE
         )
-    ]
+    ],
+    indices = [androidx.room.Index(value = ["owner"])]
 )
 
 data class Photo(
     @PrimaryKey(autoGenerate = true) var photoId: Long?,
     var photoURL: String = "",
     var owner: Long?,
-    var lat : Long?,
-    var long : Long?
+    var lat : Double?,
+    var long : Double?
 )

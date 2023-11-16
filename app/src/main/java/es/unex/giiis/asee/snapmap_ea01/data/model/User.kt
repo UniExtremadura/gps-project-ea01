@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.io.Serializable
 
+//User with setters and getters
 @Entity
 data class User (
     @PrimaryKey(autoGenerate = true) var userId: Long?,
@@ -11,5 +12,7 @@ data class User (
     var aboutMe: String = "",
     var email: String = "",
     var password: String = ""
+
+
 
 ) : Serializable

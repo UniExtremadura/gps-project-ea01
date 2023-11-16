@@ -1,16 +1,26 @@
 package es.unex.giiis.asee.snapmap_ea01.view.home
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
+import com.google.android.gms.location.LocationServices
+import com.google.gson.GsonBuilder
 import es.unex.giiis.asee.snapmap_ea01.R
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+import es.unex.giiis.asee.snapmap_ea01.api.APIError
+import es.unex.giiis.asee.snapmap_ea01.api.getNetworkService
+import es.unex.giiis.asee.snapmap_ea01.data.model.Photo
+import es.unex.giiis.asee.snapmap_ea01.data.model.User
+import es.unex.giiis.asee.snapmap_ea01.database.SnapMapDatabase
+import es.unex.giiis.asee.snapmap_ea01.databinding.FragmentCameraBinding
+import kotlinx.coroutines.launch
 
 /**
  * A simple [Fragment] subclass.
@@ -18,16 +28,13 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class CameraFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var photo = ""
+    private lateinit var binding : FragmentCameraBinding
+    private lateinit var db: SnapMapDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+        binding = FragmentCameraBinding.inflate(layoutInflater)
     }
 
     override fun onCreateView(
@@ -35,26 +42,84 @@ class CameraFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_camera, container, false)
+
+        db = SnapMapDatabase.getInstance(requireContext())!!
+
+        setUpUI()
+        setUpListeners()
+
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CameraFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CameraFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    private fun setUpUI() {
+        with(binding){
+            lifecycleScope.launch {
+                try{
+                    photo = fetchDog()
+                    Log.d("API", "Duck: $photo")
+                    Glide.with(requireContext())
+                        .load(photo)
+                        .placeholder(R.drawable.baseline_access_time_24)
+                        .into(iVDog)
+                } catch (e: APIError) {
+                    Log.e("MainActivity", "Error fetching duck", e)
                 }
             }
+        }
+    }
+
+    private fun setUpListeners() {
+        with(binding){
+            btnUpload.setOnClickListener{
+                uploadPhoto()
+            }
+        }
+    }
+
+    private fun uploadPhoto() {
+        val user = requireActivity().intent.getSerializableExtra(HomeActivity.USER_INFO) as User
+
+        //Obtain location
+        val location = LocationServices.getFusedLocationProviderClient(requireContext())
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+
+        var lat: Double = 0.0
+        var long: Double = 0.0
+        location.lastLocation.addOnSuccessListener {
+            lat = it.latitude
+            long = it.longitude
+        }
+
+        val photo = Photo(
+            photoId = null,
+            photoURL = photo,
+            owner = user.userId,
+            lat = lat,
+            long = long
+        )
+
+        lifecycleScope.launch {
+            val photoId = db.photoDao().insertPhoto(photo)
+            Log.d("API", "Photo uploaded with id: $photoId")
+        }
+    }
+
+    private suspend fun fetchDog(): String {
+        try {
+            val gson = GsonBuilder().setLenient().create()
+            return getNetworkService().getDog().uri.toString()
+        } catch (cause: Throwable) {
+            Log.e("API", "Error fetching duck", cause)
+            throw APIError("Error fetching duck", cause)
+        }
     }
 }

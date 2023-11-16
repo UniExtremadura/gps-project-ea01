@@ -17,7 +17,8 @@ import androidx.room.ForeignKey
             childColumns = ["photoId"],
             onDelete = ForeignKey.CASCADE
         )
-    ]
+    ],
+    indices = [androidx.room.Index(value = ["userId"]), androidx.room.Index(value = ["photoId"])]
 )
 
 data class UserPhotoLikeRef(

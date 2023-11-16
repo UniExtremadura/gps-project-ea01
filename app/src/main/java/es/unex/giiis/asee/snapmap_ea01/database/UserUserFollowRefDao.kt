@@ -1,11 +1,11 @@
 package es.unex.giiis.asee.snapmap_ea01.database
 
+import es.unex.giiis.asee.snapmap_ea01.data.model.UserUserFollowRef
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import es.unex.giiis.asee.snapmap_ea01.data.model.UserUserFollowRef
 
 @Dao
 interface UserUserFollowRefDao {
