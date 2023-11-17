@@ -132,8 +132,8 @@ class CameraFragment : Fragment() {
             val gson = GsonBuilder().setLenient().create()
             return getNetworkService().getDog().uri.toString()
         } catch (cause: Throwable) {
-            Log.e("API", "Error fetching duck", cause)
-            throw APIError("Error fetching duck", cause)
+            Log.e("API", "Error fetching dog", cause)
+            throw APIError("Error fetching dog", cause)
         }
     }
 }

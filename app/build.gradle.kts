@@ -81,6 +81,9 @@ dependencies {
     implementation ("com.google.android.gms:play-services-maps:18.2.0")
     implementation ("com.google.android.gms:play-services-location:18.0.0")
 
+    //Para usar picasso
+    implementation ("com.squareup.picasso:picasso:2.8")
+
 
     // Feature module Support
     implementation("androidx.navigation:navigation-dynamic-features-fragment:$nav_version")
