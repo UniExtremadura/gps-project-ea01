@@ -5,7 +5,6 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 @Entity(
-    primaryKeys = ["commentId"],
     foreignKeys = [
         ForeignKey(
             entity = User::class,
@@ -19,12 +18,15 @@ import androidx.room.PrimaryKey
             childColumns = ["photo"],
             onDelete = ForeignKey.CASCADE
         )
-    ]
+    ],
+    indices = [androidx.room.Index(value = ["author"]), androidx.room.Index(value = ["photo"])]
+
 )
 
 data class Comment(
     @PrimaryKey(autoGenerate = true) var commentId: Long?,
     var author: Long?,
-    var photo: Long?
+    var photo: Long?,
+    var comment: String?
 )
 

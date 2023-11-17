@@ -4,8 +4,10 @@ import es.unex.giiis.asee.snapmap_ea01.data.model.UserUserFollowRef
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import es.unex.giiis.asee.snapmap_ea01.data.model.User
 
 @Dao
 interface UserUserFollowRefDao {
@@ -20,4 +22,7 @@ interface UserUserFollowRefDao {
 
     @Delete
     suspend fun deleteUserFollowRef(userUserFollowRef: UserUserFollowRef)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(userFollows: List<UserUserFollowRef>)
 }
