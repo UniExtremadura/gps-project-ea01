@@ -14,7 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-@Database(entities = [User::class, Photo::class, UserPhotoLikeRef::class, UserUserFollowRef::class, Comment::class], version = 4)
+@Database(entities = [User::class, Photo::class, UserPhotoLikeRef::class, UserUserFollowRef::class, Comment::class], version = 5)
 abstract class SnapMapDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
 

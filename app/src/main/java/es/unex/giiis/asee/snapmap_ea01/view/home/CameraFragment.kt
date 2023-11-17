@@ -14,7 +14,6 @@ import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.gson.GsonBuilder
 import es.unex.giiis.asee.snapmap_ea01.R
 import es.unex.giiis.asee.snapmap_ea01.api.APIError
 import es.unex.giiis.asee.snapmap_ea01.api.getNetworkService
@@ -24,11 +23,6 @@ import es.unex.giiis.asee.snapmap_ea01.database.SnapMapDatabase
 import es.unex.giiis.asee.snapmap_ea01.databinding.FragmentCameraBinding
 import kotlinx.coroutines.launch
 
-/**
- * A simple [Fragment] subclass.
- * Use the [CameraFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class CameraFragment : Fragment() {
     private var photo = ""
     private val LOCATION_PERMISSION_REQUEST_CODE = 1
@@ -136,7 +130,6 @@ class CameraFragment : Fragment() {
 
     private suspend fun fetchDog(): String {
         try {
-            val gson = GsonBuilder().setLenient().create()
             return getNetworkService().getDog().uri.toString()
         } catch (cause: Throwable) {
             Log.e("API", "Error fetching dog", cause)

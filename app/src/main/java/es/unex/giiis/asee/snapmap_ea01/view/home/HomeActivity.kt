@@ -1,5 +1,6 @@
 package es.unex.giiis.asee.snapmap_ea01.view.home
 
+
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle

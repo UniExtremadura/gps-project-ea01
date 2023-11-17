@@ -27,7 +27,7 @@
                 android:layout_width="110dp"
                 android:layout_height="110dp"
                 app:tint="@color/items"
-                android:src="@drawable/baseline_broken_image_24"/>
+                android:src="@drawable/baseline_person_24"/>
 
             <TextView
                 android:id="@+id/info_window_title"
