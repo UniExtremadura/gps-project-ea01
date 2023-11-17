@@ -1,12 +1,28 @@
 <resources>
     <string name="app_name">SnapMap_ea01</string>
+    <string name="alreadyHaveAccount">Already have an account? Log in</string>
+    <string name="register">Register</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="about_me">About Me</string>
+    <string name="username">Username</string>
+    <string name="login">Login </string>
+    <string name="bienvenido">Bienvenido a SnapMap</string>
+    <string name="edit">Edit</string>
+    <string name="following">Following</string>
+    <string name="followers">Followers</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="logout">Logout</string>
+    />
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="home_option">Home</string>
     <string name="search_option">Search</string>
     <string name="camera_option">Camera</string>
     <string name="profile_option">Profile</string>
-    <string name="username">username</string>
     <string name="from_username">from username</string>
+    <string name="welcome_to_snapmap">Welcome to SnapMap</string>
+    <string name="don_t_have_an_account_yet_create_an_account">Don\'t have an account yet? Create an account</string>
+    <string name="upload">Upload</string>
 
 </resources>

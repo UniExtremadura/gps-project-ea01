@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import es.unex.giiis.asee.snapmap_ea01.R
+import es.unex.giiis.asee.snapmap_ea01.data.model.User
 import es.unex.giiis.asee.snapmap_ea01.databinding.ActivityHomeBinding
 
 class HomeActivity : AppCompatActivity() {
@@ -21,9 +22,11 @@ class HomeActivity : AppCompatActivity() {
     companion object {
         const val USER_INFO = "USER_INFO"
         fun start(
-            context: Context
+            context: Context,
+            user: User,
         ) {
             val intent = Intent(context, HomeActivity::class.java).apply {
+                putExtra(USER_INFO, user)
             }
             context.startActivity(intent)
         }
@@ -36,8 +39,9 @@ class HomeActivity : AppCompatActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val user = intent.getSerializableExtra(USER_INFO) as User
 
-        setUpUI()
+        setUpUI(user)
         setUpListeners()
 
     }
