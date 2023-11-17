@@ -9,13 +9,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.bumptech.glide.request.RequestOptions
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -27,6 +24,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import es.unex.giiis.asee.snapmap_ea01.R
 import es.unex.giiis.asee.snapmap_ea01.data.model.Photo
+import es.unex.giiis.asee.snapmap_ea01.database.SnapMapDatabase
+import kotlinx.coroutines.launch
 
 /**
  * A simple [Fragment] subclass.
@@ -36,6 +35,7 @@ import es.unex.giiis.asee.snapmap_ea01.data.model.Photo
 class HomeFragment : Fragment(), OnMapReadyCallback {
 
     //List of photos
+    private lateinit var db: SnapMapDatabase
     private var _photos: List<Photo> = emptyList()
 
     //GoogleMaps variables
@@ -56,6 +56,11 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_home, container, false)
+
+        db = SnapMapDatabase.getInstance(requireContext())!!
+
+        getPhotos()
+
         mapView = view.findViewById(R.id.mapView)
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this) // Configura el callback OnMapReady
@@ -122,33 +127,17 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
         getPhotos()
         setUpPhotos()
-
-        // Adición de un marcador de prueba
-        val mapMarker = layoutInflater.inflate(R.layout.picture_map_marker, null)
-        val cardView = mapMarker.findViewById<View>(R.id.markerCardView)
-        val bitmap = Bitmap.createScaledBitmap(viewToBitmap(cardView)!!, cardView.width, cardView.height, false)
-        val smallerMarkerIcon = BitmapDescriptorFactory.fromBitmap(bitmap)
-        mMap?.addMarker(
-            MarkerOptions()
-                .position(LatLng(39.46473283509486, -6.38389228558333))
-                .icon(smallerMarkerIcon)
-        )
-
     }
 
     private fun getPhotos(){
-
-        //TODO: Change this to get the photos from the database
-        val lat1 = 39.49082391807905
-        val lon1 = -6.4061240044765
-        val lat2 = 39.44995320116261
-        val lon2 = -6.342590539110122
-
-        for (i in 1..10){
-            val lat = (lat1 - lat2) * Math.random() + lat2
-            val lon = (lon1 - lon2) * Math.random() + lon2
-            val photo = Photo("x", lat, lon, 0)
-            _photos += photo
+        //Obtiene las fotos de la base de datos
+        //TODO: LLamar a método para sólo obtener las fotos de los usuarios que sigue
+        lifecycleScope.launch {
+            try {
+                _photos = db.photoDao().getAllPhotos()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
@@ -158,26 +147,14 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             val mapMarker = layoutInflater.inflate(R.layout.picture_map_marker, null)
             val cardView = mapMarker.findViewById<View>(R.id.markerCardView)
             val username = cardView.findViewById<TextView>(R.id.info_window_title)
-            val imageView = cardView.findViewById<ImageView>(R.id.iVPhoto)
-            username.setText("Jose Luis")
 
-            val imageUrl = "https://s1.ppllstatics.com/lasprovincias/www/multimedia/202112/12/media/cortadas/gatos-kb2-U160232243326NVC-1248x770@Las%20Provincias.jpg"
+            //Todo: Obtener el nombre de usuario del propietario de la foto e insertarlo al username
 
-            // Configuración de opciones de carga
-            val requestOptions = RequestOptions()
-                .placeholder(R.drawable.baseline_thumb_up_24) // Puedes establecer un placeholder mientras se carga la imagen
-                .error(R.drawable.baseline_broken_image_24) // Puedes establecer una imagen de error si la carga falla
-            //TODO: Fix problem with glide
-            Glide.with(this)
-                .load(imageUrl)
-                .apply(requestOptions)
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .into(imageView)
-
-
+            username.text = photo.owner.toString()
 
             val bitmap = Bitmap.createScaledBitmap(viewToBitmap(cardView)!!, cardView.width, cardView.height, false)
             val smallerMarkerIcon = BitmapDescriptorFactory.fromBitmap(bitmap)
+
             mMap?.addMarker(
                 MarkerOptions()
                     .position(LatLng(photo.lat, photo.lon))

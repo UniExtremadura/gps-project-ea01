@@ -41,7 +41,7 @@ class HomeActivity : AppCompatActivity() {
 
         val user = intent.getSerializableExtra(USER_INFO) as User
 
-        setUpUI(user)
+        setUpUI()
         setUpListeners()
 
     }

@@ -10,6 +10,9 @@ interface PhotoDao {
     @Query("SELECT * FROM photo WHERE photoId = :photoId LIMIT 1")
     suspend fun getPhoto(photoId: Long): Photo
 
+    @Query("SELECT * FROM photo")
+    suspend fun getAllPhotos(): List<Photo>
+
     @Insert
     suspend fun insertPhoto(photo: Photo): Long
 }

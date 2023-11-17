@@ -10,7 +10,7 @@ import es.unex.giiis.asee.snapmap_ea01.data.model.UserPhotoLikeRef
 import es.unex.giiis.asee.snapmap_ea01.data.model.UserUserFollowRef
 
 
-@Database(entities = [User::class, Photo::class, UserPhotoLikeRef::class, UserUserFollowRef::class], version = 2)
+@Database(entities = [User::class, Photo::class, UserPhotoLikeRef::class, UserUserFollowRef::class], version = 3)
 abstract class SnapMapDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
 
