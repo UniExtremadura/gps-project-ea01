@@ -17,6 +17,7 @@ import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -122,13 +123,9 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
             mMap?.setOnMarkerClickListener { marker ->
                 val photoId = marker.tag as String?
-
-                // Abrimos el fragmento de imagen pasando la ID de la foto
-                val imageFragment = ImageFragment.newInstance()
-                requireActivity().supportFragmentManager.beginTransaction()
-                    .replace(R.id.nav_host_fragment, imageFragment)
-                    .addToBackStack(null)
-                    .commit()
+                val action = HomeFragmentDirections.actionHomeFragmentToImageFragment(photoId = photoId!!.toLong())
+                val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+                navController.navigate(action)
 
                 true
             }
@@ -251,6 +248,4 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             // Puedes establecer un recurso de imagen predeterminado o hacer cualquier otra acción aquí
         }
     }
-
-
 }

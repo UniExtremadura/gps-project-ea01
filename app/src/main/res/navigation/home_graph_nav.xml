@@ -12,7 +12,8 @@
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_homeFragment_to_imageFragment"
-            app:destination="@id/imageFragment" />
+            app:destination="@id/imageFragment">
+        </action>
     </fragment>
     <fragment
         android:id="@+id/cameraFragment"
@@ -37,7 +38,11 @@
         android:id="@+id/imageFragment"
         android:name="es.unex.giiis.asee.snapmap_ea01.view.home.ImageFragment"
         android:label="fragment_image"
-        tools:layout="@layout/fragment_image" >
+        tools:layout="@layout/fragment_image">
+        <argument
+            android:name="photoId"
+            app:argType="long"
+            android:defaultValue="-1L" />
         <action
             android:id="@+id/action_imageFragment_to_commentsFragment"
             app:destination="@id/commentsFragment" />
