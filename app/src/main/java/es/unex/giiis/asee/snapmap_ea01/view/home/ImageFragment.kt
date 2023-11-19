@@ -20,6 +20,8 @@ class ImageFragment : Fragment() {
     private lateinit var db: SnapMapDatabase
     private lateinit var photo: Photo
 
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -77,12 +79,15 @@ class ImageFragment : Fragment() {
 
     private fun setUpListeners() {
         with(binding){
+            val args = ImageFragmentArgs.fromBundle(requireArguments())
+            val photoId = args.photoId
+
             ivLike.setOnClickListener {
                 val newColor = ContextCompat.getColor(requireContext(), R.color.like)
                 ivLike.setColorFilter(newColor)
             }
             ivComment.setOnClickListener {
-                val commentsFragment = CommentsFragment()
+                val commentsFragment = CommentsFragment.newInstance(photoId)
                 requireActivity().supportFragmentManager.beginTransaction()
                     .replace(R.id.nav_host_fragment, commentsFragment)
                     .addToBackStack(null)

@@ -11,31 +11,18 @@ import androidx.recyclerview.widget.RecyclerView
 import es.unex.giiis.asee.snapmap_ea01.R
 import es.unex.giiis.asee.snapmap_ea01.adapters.CommentsAdapter
 import es.unex.giiis.asee.snapmap_ea01.database.SnapMapDatabase
-import es.unex.giiis.asee.snapmap_ea01.dummy.dummyComment
 import kotlinx.coroutines.launch
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [CommentsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+private const val ARG_PHOTO_ID = "photoId"
 
 class CommentsFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
+    private var photoId: Long? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            photoId = it.getLong(ARG_PHOTO_ID)
         }
     }
 
@@ -56,13 +43,18 @@ class CommentsFragment : Fragment() {
         // Obtiene el userDao de la base de datos
         val userDao = SnapMapDatabase.getInstance(requireContext())?.userDao()
 
-        // Usamos el adapter para establecer la lista de comentarios
-        commentDao?.let {
-            lifecycleScope.launch {
-                val comments = it.getAllComments() // Utiliza una función en CommentDao para obtener todos los comentarios
-                val commentsAdapter =
-                    userDao?.let { it1 -> CommentsAdapter(comments, it1, lifecycleScope) }
-                recyclerView.adapter = commentsAdapter
+        commentDao?.let { dao ->
+            userDao?.let { user ->
+                lifecycleScope.launch {
+                    try {
+                        val comments = photoId?.let { dao.getCommentsForPhoto(it) }
+                        val commentsAdapter = CommentsAdapter(comments.orEmpty(), user, lifecycleScope)
+                        recyclerView.adapter = commentsAdapter
+                    } catch (e: Exception) {
+                        // Manejar la excepción (puedes mostrar un mensaje de error o registrar el error)
+                        e.printStackTrace()
+                    }
+                }
             }
         }
 
@@ -70,22 +62,13 @@ class CommentsFragment : Fragment() {
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CommentsFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CommentsFragment().apply {
+        fun newInstance(photoId: Long): CommentsFragment {
+            return CommentsFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                    putLong(ARG_PHOTO_ID, photoId)
                 }
             }
+        }
     }
 }

@@ -28,4 +28,7 @@ interface CommentDao {
     @Query("SELECT * FROM comment")
     suspend fun getAllComments(): List<Comment>
 
+    @Query("SELECT * FROM comment WHERE photo = :photoId")
+    suspend fun getCommentsForPhoto(photoId: Long): List<Comment>
+
 }

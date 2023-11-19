@@ -17,14 +17,14 @@ val dummyUser: List<User> = listOf(
 
 val dummyPhoto: List<Photo> = listOf(
     Photo(1,"https://images.dog.ceo/breeds/dhole/n02115913_3229.jpg", 1,	39.467082 ,-6.383266),
-    Photo(2,"https://images.dog.ceo/breeds/pomeranian/n02112018_6208.jpg", 2,	45.467082 ,-8.582210),
-    Photo(3,"https://images.dog.ceo/breeds/buhund-norwegian/hakon2.jpg", 3,	42.467082 ,-2.383126),
-    Photo(4,"https://images.dog.ceo/breeds/terrier-lakeland/n02095570_457.jpg", 4,	32.145347 ,-1.754412),
-    Photo(5,"https://images.dog.ceo/breeds/basenji/n02110806_4122.jpg", 5,	49.145202 ,-9.978556)
+    Photo(2,"https://images.dog.ceo/breeds/pomeranian/n02112018_6208.jpg", 2,	39.480042 , -6.372755),
+    Photo(3,"https://images.dog.ceo/breeds/buhund-norwegian/hakon2.jpg", 3,	39.460681, -6.378834),
+    Photo(4,"https://images.dog.ceo/breeds/terrier-lakeland/n02095570_457.jpg", 4,	39.465467, -6.367453),
+    Photo(5,"https://images.dog.ceo/breeds/basenji/n02110806_4122.jpg", 5,	39.479299, -6.342499)
 )
 
 val dummyComment: List<Comment> = listOf(
-    Comment(1, 1, 1, "Sales genial!!"),
+    Comment(1, 4, 1, "Sales genial!!"),
     Comment(2, 2, 4, "Me encanta ese paisaje."),
     Comment(3, 3, 2, "Impresionante"),
     Comment(4, 4, 3, "Maravillosa foto :)"),
