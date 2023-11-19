@@ -35,10 +35,6 @@
             app:destination="@id/editProfileFragment" />
     </fragment>
     <fragment
-        android:id="@+id/editProfileFragment"
-        android:name="es.unex.giiis.asee.snapmap_ea01.view.home.EditProfileFragment"
-        android:label="EditProfileFragment" />
-    <fragment
         android:id="@+id/imageFragment"
         android:name="es.unex.giiis.asee.snapmap_ea01.view.home.ImageFragment"
         android:label="fragment_image"
