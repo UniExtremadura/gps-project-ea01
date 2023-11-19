@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
@@ -19,6 +20,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -133,28 +136,38 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         setUpPhotos()
     }
 
-    private fun getPhotos(){
-        //Obtiene las fotos de la base de datos
-        //TODO: LLamar a método para sólo obtener las fotos de los usuarios que sigue
+    private fun getPhotos() {
+        // Obtiene las fotos de la base de datos y carga las imágenes con Glide
         lifecycleScope.launch {
             try {
                 _photos = db.photoDao().getAllPhotos()
+
+                for (photo in _photos) {
+                    val image = ImageView(requireContext())
+
+                    // Utiliza SimpleTarget para esperar la carga de la imagen antes de proceder
+                    Glide.with(requireContext())
+                        .asBitmap()
+                        .load(photo.photoURL)
+                        .into(object : CustomTarget<Bitmap>() {
+                            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                                // La imagen está lista, ahora puedes proceder con la copia
+                                image.setImageBitmap(resource)
+                                _loadedPhotos += Pair(photo.photoId!!, image)
+                                Log.d("getPhotos", "Loaded image for photoId ${photo.photoId}")
+                            }
+
+                            override fun onLoadCleared(placeholder: Drawable?) {
+                                // Manejar la limpieza, si es necesario
+                            }
+                        })
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-
-            for(photo in _photos){
-                val image = ImageView(requireContext())
-                Glide.with(requireContext())
-                    .load(photo.photoURL)
-                    .into(image)
-                _loadedPhotos += Pair(photo.photoId!!, image)
-
-                // Imprime información de depuración
-                Log.d("getPhotos", "Loaded image for photoId ${photo.photoId}")
-            }
         }
     }
+
 
     @SuppressLint("ResourceType")
     private fun setUpPhotos() {
@@ -235,7 +248,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         // Obtener el contenido del ImageView de origen
         val drawable = sourceImageView.drawable
 
-        // Verificar si el drawable no es nulo
+        // Verificar si el drawable no es nulo y es un BitmapDrawable
         if (drawable != null && drawable is BitmapDrawable) {
             // Si no es nulo y es un BitmapDrawable, realizar el cast y obtener el bitmap
             val bitmap = drawable.bitmap
