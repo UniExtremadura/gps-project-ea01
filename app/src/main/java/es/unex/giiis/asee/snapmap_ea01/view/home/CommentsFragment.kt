@@ -12,6 +12,7 @@ import es.unex.giiis.asee.snapmap_ea01.R
 import es.unex.giiis.asee.snapmap_ea01.adapters.CommentsAdapter
 import es.unex.giiis.asee.snapmap_ea01.database.SnapMapDatabase
 import es.unex.giiis.asee.snapmap_ea01.dummy.dummyComment
+import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -49,14 +50,20 @@ class CommentsFragment : Fragment() {
         // Configura el LayoutManager del RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
+        // Obtiene el commentDao de la base de datos
+        val commentDao = SnapMapDatabase.getInstance(requireContext())?.commentDao()
+
         // Obtiene el userDao de la base de datos
         val userDao = SnapMapDatabase.getInstance(requireContext())?.userDao()
 
-        // Crea un Adapter y úsalo para establecer la lista de comentarios
-        userDao?.let {
-            val commentsAdapter = CommentsAdapter(dummyComment, it, lifecycleScope) // it se trata de la instancia no nula de UserDao.
-            // Si dicha instancia fuese nula no entraría en el bloque let
-            recyclerView.adapter = commentsAdapter
+        // Usamos el adapter para establecer la lista de comentarios
+        commentDao?.let {
+            lifecycleScope.launch {
+                val comments = it.getAllComments() // Utiliza una función en CommentDao para obtener todos los comentarios
+                val commentsAdapter =
+                    userDao?.let { it1 -> CommentsAdapter(comments, it1, lifecycleScope) }
+                recyclerView.adapter = commentsAdapter
+            }
         }
 
         return view

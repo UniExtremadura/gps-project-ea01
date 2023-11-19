@@ -24,4 +24,8 @@ interface CommentDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(comments: List<Comment>)
+
+    @Query("SELECT * FROM comment")
+    suspend fun getAllComments(): List<Comment>
+
 }
