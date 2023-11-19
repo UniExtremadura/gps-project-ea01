@@ -20,6 +20,6 @@ data class Photo(
     @PrimaryKey(autoGenerate = true) var photoId: Long?,
     var photoURL: String = "",
     var owner: Long?,
-    var lat : Double?,
-    var long : Double?
+    var lat : Double,
+    var lon : Double
 )

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.home.ImageFragment">
+
+    <TextView
+        android:id="@+id/tvAuthor"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:text="@string/from_username"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:background="@color/items"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/ivImage"
+        android:layout_width="match_parent"
+        android:layout_height="530dp"
+        android:src="@drawable/baseline_broken_image_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvAuthor"
+        app:layout_constraintBottom_toTopOf="@id/llLikeComment"/>
+
+    <LinearLayout
+        android:id="@+id/llLikeComment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorNavBar"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="20dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:id="@+id/ivComment"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginEnd="70dp"
+            android:src="@drawable/baseline_comment_24"
+            app:tint="@color/white" />
+
+        <ImageView
+            android:id="@+id/ivLike"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/baseline_thumb_up_24"
+            app:tint="@color/white" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

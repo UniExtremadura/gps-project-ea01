@@ -12,7 +12,4 @@ data class User (
     var aboutMe: String = "",
     var email: String = "",
     var password: String = ""
-
-
-
 ) : Serializable

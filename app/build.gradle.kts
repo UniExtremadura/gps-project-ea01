@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("androidx.navigation.safeargs.kotlin")
     id("com.google.devtools.ksp")
 }
 
@@ -49,6 +50,7 @@ android {
 dependencies {
 
     implementation("com.google.android.gms:play-services-maps:18.2.0")
+    implementation("com.google.android.gms:play-services-fido:20.1.0")
     implementation("androidx.navigation:navigation-runtime-ktx:2.7.5")
     implementation("androidx.room:room-common:2.6.0")
     val nav_version = "2.7.4"
@@ -80,6 +82,13 @@ dependencies {
     // Para usar el Google Maps
     implementation ("com.google.android.gms:play-services-maps:18.2.0")
     implementation ("com.google.android.gms:play-services-location:18.0.0")
+
+    // Para usar picasso
+    implementation ("com.squareup.picasso:picasso:2.8")
+
+    //Para usar gridle
+    implementation ("com.github.bumptech.glide:glide:4.12.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
 
     //Para usar picasso
     implementation ("com.squareup.picasso:picasso:2.8")

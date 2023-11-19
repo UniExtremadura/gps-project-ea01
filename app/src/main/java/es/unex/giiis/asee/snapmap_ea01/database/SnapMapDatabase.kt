@@ -8,9 +8,13 @@ import es.unex.giiis.asee.snapmap_ea01.data.model.Photo
 import es.unex.giiis.asee.snapmap_ea01.data.model.User
 import es.unex.giiis.asee.snapmap_ea01.data.model.UserPhotoLikeRef
 import es.unex.giiis.asee.snapmap_ea01.data.model.UserUserFollowRef
+import es.unex.giiis.asee.snapmap_ea01.data.model.Comment
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
-@Database(entities = [User::class, Photo::class, UserPhotoLikeRef::class, UserUserFollowRef::class], version = 2)
+@Database(entities = [User::class, Photo::class, UserPhotoLikeRef::class, UserUserFollowRef::class, Comment::class], version = 5)
 abstract class SnapMapDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
 
@@ -19,6 +23,8 @@ abstract class SnapMapDatabase : RoomDatabase() {
     abstract fun userPhotoLikeRefDao(): UserPhotoLikeRefDao
 
     abstract fun userUserFollowRefDao(): UserUserFollowRefDao
+
+    abstract fun commentDao(): CommentDao
 
     companion object {
         private var INSTANCE: SnapMapDatabase? = null
@@ -32,9 +38,13 @@ abstract class SnapMapDatabase : RoomDatabase() {
                         .fallbackToDestructiveMigration()
                         .build();
 
+                    CoroutineScope(Dispatchers.IO).launch {
+                        // Inicializa la base de datos cuando se crea la instancia
+                        DatabaseInitializer.initialize(context.applicationContext)
+                    }
                 }
             }
-            return INSTANCE
+            return INSTANCE!!
         }
         fun destroyInstance() {
             INSTANCE = null

@@ -1,5 +1,6 @@
 package es.unex.giiis.asee.snapmap_ea01.view.home
 
+
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -42,13 +43,13 @@ class HomeActivity : AppCompatActivity() {
 
         val user = intent.getSerializableExtra(USER_INFO) as User
 
-        setUpUI(user)
+        setUpUI()
         setUpListeners()
 
     }
 
     // fun setUpUI(user: User) cabecera para cuando tengamos login
-    private fun setUpUI(user: User) {
+    private fun setUpUI() {
 
         homeFragment = HomeFragment()
         searchFragment = SearchFragment()
