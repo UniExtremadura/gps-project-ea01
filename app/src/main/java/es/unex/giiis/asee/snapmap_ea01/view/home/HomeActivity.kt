@@ -3,6 +3,7 @@ package es.unex.giiis.asee.snapmap_ea01.view.home
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -53,6 +54,15 @@ class HomeActivity : AppCompatActivity() {
         searchFragment = SearchFragment()
         cameraFragment = CameraFragment()
         profileFragment = ProfileFragment()
+
+        val args = Bundle()
+
+        args.putSerializable(USER_INFO, user)
+
+        if(user != null) {
+            profileFragment.arguments = args
+        }
+        else Log.d("HomeActivity", "user is null")
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
