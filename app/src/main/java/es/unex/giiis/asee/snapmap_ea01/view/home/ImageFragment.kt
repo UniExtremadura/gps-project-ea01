@@ -25,6 +25,7 @@ class ImageFragment : Fragment() {
     private lateinit var photo: Photo
     private lateinit var currentUser: User
     private var currentPhotoId: Long = -1
+    private var like: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,6 +60,13 @@ class ImageFragment : Fragment() {
 
                 // Utiliza el ID del usuario del objeto User
                 tvAuthor.text = "from ${db.userDao().getUserById(currentUser.userId)}"
+
+                like = db.userPhotoLikeRefDao().likeExists(currentUser.userId!!, currentPhotoId) > 0
+                // Cambia el color del botón like según la existencia de la referencia
+                if (like) {
+                    val newColor = ContextCompat.getColor(requireContext(), R.color.like)
+                    ivLike.setColorFilter(newColor)
+                }
             }
         }
     }
@@ -66,16 +74,24 @@ class ImageFragment : Fragment() {
     private fun setUpListeners() {
         with(binding) {
             ivLike.setOnClickListener {
-                // Cambiar el color del botón like
-                val newColor = ContextCompat.getColor(requireContext(), R.color.like)
-                ivLike.setColorFilter(newColor)
-
-                // Registrar el like en la base de datos
-                val userPhotoLikeRef =
-                    currentUser.userId?.let { it1 -> UserPhotoLikeRef(it1, currentPhotoId) }
-                lifecycleScope.launch {
-                    if (userPhotoLikeRef != null) {
-                        db.userPhotoLikeRefDao().insertUserPhotoLikeRef(userPhotoLikeRef)
+                if (like) {
+                    lifecycleScope.launch {
+                        val userPhotoLikeRef = UserPhotoLikeRef(currentUser.userId!!, currentPhotoId)
+                        db.userPhotoLikeRefDao().deletePhotoLikeRef(userPhotoLikeRef)
+                        like = false
+                        val defaultColor = ContextCompat.getColor(requireContext(), R.color.white)
+                        ivLike.setColorFilter(defaultColor)
+                    }
+                } else {
+                    lifecycleScope.launch {
+                        val userPhotoLikeRef =
+                            currentUser.userId?.let { it1 -> UserPhotoLikeRef(it1, currentPhotoId) }
+                        if (userPhotoLikeRef != null) {
+                            db.userPhotoLikeRefDao().insertUserPhotoLikeRef(userPhotoLikeRef)
+                            like = true
+                            val newColor = ContextCompat.getColor(requireContext(), R.color.like)
+                            ivLike.setColorFilter(newColor)
+                        }
                     }
                 }
             }
