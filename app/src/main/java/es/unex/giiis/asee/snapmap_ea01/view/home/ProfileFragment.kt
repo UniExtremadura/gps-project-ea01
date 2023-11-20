@@ -32,6 +32,9 @@ class ProfileFragment : Fragment() {
 
     private fun setUpUI() {
 
+        // Hide toolbar and bottom navigation bar
+
+
     }
 
     private fun setUpListeners(){
@@ -43,6 +46,10 @@ class ProfileFragment : Fragment() {
             btnLogout.setOnClickListener{
                 val intent = Intent(requireContext(), LoginActivity::class.java)
                 startActivity(intent)
+            }
+            settingsButton.setOnClickListener{
+                val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+                navController.navigate(R.id.settingsFragment)
             }
         }
     }

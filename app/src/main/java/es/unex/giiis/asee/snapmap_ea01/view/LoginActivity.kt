@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.preference.PreferenceManager
 import es.unex.giiis.asee.snapmap_ea01.data.model.User
 import es.unex.giiis.asee.snapmap_ea01.database.SnapMapDatabase
 import es.unex.giiis.asee.snapmap_ea01.databinding.ActivityLoginBinding
@@ -24,6 +25,22 @@ class LoginActivity : AppCompatActivity() {
         db = SnapMapDatabase.getInstance(applicationContext)!!
 
         setUpListeners()
+
+        //read settings
+        readSettings()
+    }
+
+    private fun readSettings() {
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this).all
+
+        val rememberme = preferences["rememberme"] as Boolean? ?: false
+        val username = preferences["username"] as String? ?: ""
+        val password = preferences["password"] as String? ?: ""
+
+        if (rememberme) {
+            binding.etUsername.setText(username)
+            binding.etPassword.setText(password)
+        }
     }
 
     private fun setUpListeners(){

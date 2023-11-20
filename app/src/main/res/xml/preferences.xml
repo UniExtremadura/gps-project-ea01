@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="@string/autologin">
+
+        <SwitchPreference
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:defaultValue="false"
+            android:title="@string/rememberme"
+            app:key="rememberme" />
+        <EditTextPreference
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:defaultValue="Default user"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/username"
+            app:key="username"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:defaultValue="Default password"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/password"
+            app:key="password"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="@string/sorting">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:title="@string/sorting_title"
+            android:key="sorting"/>
+
+        <ListPreference
+            app:defaultValue="Username"
+            app:entries="@array/criteria_entries"
+            app:entryValues="@array/criteria_entryValues"
+            app:key="criteria"
+            app:title="@string/criteria_title"
+            app:useSimpleSummaryProvider="true"/>
+
+    </PreferenceCategory>
+</PreferenceScreen>

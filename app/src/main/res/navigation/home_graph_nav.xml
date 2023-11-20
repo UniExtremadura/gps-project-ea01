@@ -5,6 +5,11 @@
     android:id="@+id/home_graph_nav"
     app:startDestination="@id/homeFragment">
 
+    <action
+        android:id="@+id/action_profileFragment_to_settingsFragment"
+        app:destination="@id/settingsFragment" />
+        />
+
     <fragment
         android:id="@+id/homeFragment"
         android:name="es.unex.giiis.asee.snapmap_ea01.view.home.HomeFragment"
@@ -29,4 +34,8 @@
         android:id="@+id/editProfileFragment"
         android:name="es.unex.giiis.asee.snapmap_ea01.view.home.EditProfileFragment"
         android:label="EditProfileFragment" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="es.unex.giiis.asee.snapmap_ea01.view.home.SettingsFragment"
+        android:label="SettingsFragment" />
 </navigation>
