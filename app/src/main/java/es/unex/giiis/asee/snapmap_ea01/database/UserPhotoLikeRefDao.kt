@@ -25,4 +25,7 @@ interface UserPhotoLikeRefDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(userLikes: List<UserPhotoLikeRef>)
+
+    @Query("SELECT COUNT(*) FROM userphotolikeref WHERE userId = :userId AND photoId = :photoId")
+    suspend fun likeExists(userId: Long, photoId: Long): Int
 }

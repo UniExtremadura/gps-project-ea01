@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,30 +13,22 @@ import androidx.recyclerview.widget.RecyclerView
 import es.unex.giiis.asee.snapmap_ea01.R
 import es.unex.giiis.asee.snapmap_ea01.adapters.CommentsAdapter
 import es.unex.giiis.asee.snapmap_ea01.database.SnapMapDatabase
-import es.unex.giiis.asee.snapmap_ea01.dummy.dummyComment
+import es.unex.giiis.asee.snapmap_ea01.data.model.Comment
+import es.unex.giiis.asee.snapmap_ea01.data.model.User
+import kotlinx.coroutines.launch
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [CommentsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+private const val ARG_PHOTO_ID = "photoId"
 
 class CommentsFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
+    private var photoId: Long? = null
+    private lateinit var db: SnapMapDatabase
+    private lateinit var currentUser: User
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            photoId = it.getLong(ARG_PHOTO_ID)
         }
     }
 
@@ -45,40 +39,63 @@ class CommentsFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_comments, container, false)
 
         val recyclerView: RecyclerView = view.findViewById(R.id.recyclerViewComments)
+        val editTextComment: EditText = view.findViewById(R.id.editTextComment)
+        val btnAddComment: Button = view.findViewById(R.id.btnAddComment)
 
         // Configura el LayoutManager del RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        // Obtiene el userDao de la base de datos
-        val userDao = SnapMapDatabase.getInstance(requireContext())?.userDao()
+        // Obtiene la instancia de SnapMapDatabase
+        db = SnapMapDatabase.getInstance(requireContext())!!
 
-        // Crea un Adapter y úsalo para establecer la lista de comentarios
-        userDao?.let {
-            val commentsAdapter = CommentsAdapter(dummyComment, it, lifecycleScope) // it se trata de la instancia no nula de UserDao.
-            // Si dicha instancia fuese nula no entraría en el bloque let
-            recyclerView.adapter = commentsAdapter
+        // Obtiene el objeto User de la actividad anterior
+        currentUser =
+            requireActivity().intent.getSerializableExtra(HomeActivity.USER_INFO) as User
+
+        lifecycleScope.launch {
+            try {
+                // Obtén la lista de comentarios para la foto actual
+                val comments = photoId?.let { db.commentDao().getCommentsForPhoto(it) }
+
+                // Configura el adaptador para el RecyclerView
+                val commentsAdapter =
+                    CommentsAdapter(comments.orEmpty(), db.userDao(), lifecycleScope)
+                recyclerView.adapter = commentsAdapter
+
+                // Configura el botón para agregar comentarios
+                btnAddComment.setOnClickListener {
+                    val newCommentText = editTextComment.text.toString()
+                    if (newCommentText.isNotEmpty()) {
+                        val newComment = Comment(
+                            author = currentUser.userId,
+                            photo = photoId!!,
+                            comment = newCommentText
+                        )
+                        // Inserta el nuevo comentario en la base de datos
+                        lifecycleScope.launch {
+                            db.commentDao().insertComment(newComment)
+                            // Actualiza la lista de comentarios en el adaptador
+                            commentsAdapter.updateComments(db.commentDao().getCommentsForPhoto(photoId!!))
+                            editTextComment.text.clear()
+                        }
+                    }
+                }
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
-
         return view
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CommentsFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CommentsFragment().apply {
+        fun newInstance(photoId: Long): CommentsFragment {
+            return CommentsFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                    putLong(ARG_PHOTO_ID, photoId)
                 }
             }
+        }
     }
 }

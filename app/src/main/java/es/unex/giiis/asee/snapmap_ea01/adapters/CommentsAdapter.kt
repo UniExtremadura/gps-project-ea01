@@ -11,8 +11,8 @@ import es.unex.giiis.asee.snapmap_ea01.database.UserDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-class CommentsAdapter(private val comments: List<Comment>, private val userDao: UserDao,
-    private val coroutineScope: CoroutineScope) :
+class CommentsAdapter(private var comments: List<Comment>, private val userDao: UserDao,
+                      private val coroutineScope: CoroutineScope) :
     RecyclerView.Adapter<CommentsAdapter.CommentViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
@@ -30,11 +30,16 @@ class CommentsAdapter(private val comments: List<Comment>, private val userDao: 
         return comments.size
     }
 
+    // Actualiza la lista de comentarios en el adaptador
+    fun updateComments(newComments: List<Comment>) {
+        comments = newComments
+        notifyDataSetChanged()
+    }
+
     inner class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val tvAuthor: TextView = itemView.findViewById(R.id.tvCommentAuthor)
         private val tvComment: TextView = itemView.findViewById(R.id.tvCommentText)
 
-        // Asigna los datos del comentario a las vistas
         fun bind(comment: Comment, userDao: UserDao) {
             coroutineScope.launch {
                 // Accede a la base de datos para obtener el usuario correspondiente

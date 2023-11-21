@@ -1,4 +1,3 @@
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -23,6 +22,19 @@
         android:layout_above="@+id/btnAddComment"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"/>
+
+    <!-- EditText para ingresar un nuevo comentario -->
+    <EditText
+        android:id="@+id/editTextComment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/btnAddComment"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:hint="Escribe tu comentario..."
+        android:inputType="textMultiLine" />
 
     <!-- Button para añadir comentarios -->
     <Button
