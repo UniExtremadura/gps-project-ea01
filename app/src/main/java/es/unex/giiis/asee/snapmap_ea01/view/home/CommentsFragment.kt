@@ -15,8 +15,6 @@ import es.unex.giiis.asee.snapmap_ea01.adapters.CommentsAdapter
 import es.unex.giiis.asee.snapmap_ea01.database.SnapMapDatabase
 import es.unex.giiis.asee.snapmap_ea01.data.model.Comment
 import es.unex.giiis.asee.snapmap_ea01.data.model.User
-import es.unex.giiis.asee.snapmap_ea01.database.CommentDao
-import es.unex.giiis.asee.snapmap_ea01.database.UserDao
 import kotlinx.coroutines.launch
 
 private const val ARG_PHOTO_ID = "photoId"
@@ -24,8 +22,7 @@ private const val ARG_PHOTO_ID = "photoId"
 class CommentsFragment : Fragment() {
 
     private var photoId: Long? = null
-    private lateinit var commentDao: CommentDao
-    private lateinit var userDao: UserDao
+    private lateinit var db: SnapMapDatabase
     private lateinit var currentUser: User
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,51 +45,44 @@ class CommentsFragment : Fragment() {
         // Configura el LayoutManager del RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        // Obtén el commentDao de la base de datos
-        commentDao = SnapMapDatabase.getInstance(requireContext())?.commentDao()!!
-
-        // Obtén el userDao de la base de datos
-        userDao = SnapMapDatabase.getInstance(requireContext())?.userDao()!!
+        // Obtiene la instancia de SnapMapDatabase
+        db = SnapMapDatabase.getInstance(requireContext())!!
 
         // Obtiene el objeto User de la actividad anterior
         currentUser =
             requireActivity().intent.getSerializableExtra(HomeActivity.USER_INFO) as User
 
-        commentDao?.let { dao ->
-            userDao?.let { user ->
-                lifecycleScope.launch {
-                    try {
-                        // Obtén la lista de comentarios para la foto actual
-                        val comments = photoId?.let { dao.getCommentsForPhoto(it) }
+        lifecycleScope.launch {
+            try {
+                // Obtén la lista de comentarios para la foto actual
+                val comments = photoId?.let { db.commentDao().getCommentsForPhoto(it) }
 
-                        // Configura el adaptador para el RecyclerView
-                        val commentsAdapter =
-                            CommentsAdapter(comments.orEmpty(), user, lifecycleScope)
-                        recyclerView.adapter = commentsAdapter
+                // Configura el adaptador para el RecyclerView
+                val commentsAdapter =
+                    CommentsAdapter(comments.orEmpty(), db.userDao(), lifecycleScope)
+                recyclerView.adapter = commentsAdapter
 
-                        // Configura el botón para agregar comentarios
-                        btnAddComment.setOnClickListener {
-                            val newCommentText = editTextComment.text.toString()
-                            if (newCommentText.isNotEmpty()) {
-                                val newComment = Comment(
-                                    author = currentUser.userId,
-                                    photo = photoId!!,
-                                    comment = newCommentText
-                                )
-                                // Inserta el nuevo comentario en la base de datos
-                                lifecycleScope.launch {
-                                    dao.insertComment(newComment)
-                                    // Actualiza la lista de comentarios en el adaptador
-                                    commentsAdapter.updateComments(dao.getCommentsForPhoto(photoId!!))
-                                    editTextComment.text.clear()
-                                }
-                            }
+                // Configura el botón para agregar comentarios
+                btnAddComment.setOnClickListener {
+                    val newCommentText = editTextComment.text.toString()
+                    if (newCommentText.isNotEmpty()) {
+                        val newComment = Comment(
+                            author = currentUser.userId,
+                            photo = photoId!!,
+                            comment = newCommentText
+                        )
+                        // Inserta el nuevo comentario en la base de datos
+                        lifecycleScope.launch {
+                            db.commentDao().insertComment(newComment)
+                            // Actualiza la lista de comentarios en el adaptador
+                            commentsAdapter.updateComments(db.commentDao().getCommentsForPhoto(photoId!!))
+                            editTextComment.text.clear()
                         }
-
-                    } catch (e: Exception) {
-                        e.printStackTrace()
                     }
                 }
+
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
         return view

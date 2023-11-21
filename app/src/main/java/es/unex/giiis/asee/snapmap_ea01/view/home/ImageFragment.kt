@@ -34,6 +34,7 @@ class ImageFragment : Fragment() {
 
         binding = FragmentImageBinding.inflate(inflater, container, false)
 
+        // Obtenemos la instancia de SnapMapDatabase
         db = SnapMapDatabase.getInstance(requireContext())!!
 
         // Obtiene el objeto User de la actividad anterior

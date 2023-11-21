@@ -30,7 +30,7 @@ class CommentsAdapter(private var comments: List<Comment>, private val userDao: 
         return comments.size
     }
 
-    // actualiza la lista de comentarios en el adaptador
+    // Actualiza la lista de comentarios en el adaptador
     fun updateComments(newComments: List<Comment>) {
         comments = newComments
         notifyDataSetChanged()
