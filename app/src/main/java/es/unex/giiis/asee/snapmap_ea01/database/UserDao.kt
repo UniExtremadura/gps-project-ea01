@@ -10,6 +10,10 @@ import es.unex.giiis.asee.snapmap_ea01.data.model.User
 
 @Dao
 interface UserDao {
+
+    @Query("SELECT * FROM user WHERE userId = :id LIMIT 1")
+    suspend fun getUserById(id: Long): User
+
     @Query("SELECT * FROM user WHERE username = :username LIMIT 1")
     suspend fun getUserByUsername(username: String): User
 

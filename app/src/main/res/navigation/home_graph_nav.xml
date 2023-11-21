@@ -33,6 +33,9 @@
         <action
             android:id="@+id/action_profileFragment_to_editProfileFragment"
             app:destination="@id/editProfileFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_tabsFollowFragment"
+            app:destination="@id/tabsFollowFragment" />
     </fragment>
     <fragment
         android:id="@+id/imageFragment"
@@ -59,5 +62,38 @@
         <action
             android:id="@+id/action_editProfileFragment_to_profileFragment2"
             app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/tabsFollowFragment"
+        android:name="es.unex.giiis.asee.snapmap_ea01.view.home.TabsFollowFragment"
+        android:label="fragment_tabs_follow"
+        tools:layout="@layout/fragment_tabs_follow" >
+        <action
+            android:id="@+id/action_tabsFollowFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_tabsFollowFragment_to_followingFragment"
+            app:destination="@id/followingFragment" />
+        <action
+            android:id="@+id/action_tabsFollowFragment_to_followersFragment"
+            app:destination="@id/followersFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/followersFragment"
+        android:name="es.unex.giiis.asee.snapmap_ea01.view.home.FollowersFragment"
+        android:label="fragment_followers"
+        tools:layout="@layout/fragment_followers" >
+        <action
+            android:id="@+id/action_followersFragment_to_tabsFollowFragment"
+            app:destination="@id/tabsFollowFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/followingFragment"
+        android:name="es.unex.giiis.asee.snapmap_ea01.view.home.FollowingFragment"
+        android:label="fragment_following"
+        tools:layout="@layout/fragment_following" >
+        <action
+            android:id="@+id/action_followingFragment_to_tabsFollowFragment"
+            app:destination="@id/tabsFollowFragment" />
     </fragment>
 </navigation>

@@ -42,19 +42,17 @@
                 android:layout_weight="1"
                 android:text="@android:string/untitled"
                 android:gravity="start"
-                android:textColor="@color/text"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textSize="14sp">
             </TextView>
 
             <Button
                 android:id="@+id/btnSeguir"
-                android:layout_width="130dp"
+                android:layout_width="220dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
                 android:backgroundTint="@color/items"
-                android:text="Seguir"
-                android:textColor="@color/textButton">
+                android:text="Seguir">
             </Button>
         </LinearLayout>
     </androidx.cardview.widget.CardView>

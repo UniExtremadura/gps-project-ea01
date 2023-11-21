@@ -14,6 +14,12 @@ interface UserUserFollowRefDao {
     @Query("SELECT * FROM useruserfollowref WHERE user1 = :user1 AND user2 = :user2 LIMIT 1")
     suspend fun getUserUserFollowRef(user1: Long, user2: Long): UserUserFollowRef?
 
+    @Query("SELECT * FROM useruserfollowref WHERE user2 = :user")
+    suspend fun getFollowers(user:Long): List<UserUserFollowRef>
+
+    @Query("SELECT * FROM useruserfollowref WHERE user1 = :user")
+    suspend fun getFollowing(user:Long): List<UserUserFollowRef>
+
     @Insert
     suspend fun insertUserUserFollowRef(userUserFollowRef: UserUserFollowRef): Long
 

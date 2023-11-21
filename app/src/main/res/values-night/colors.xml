@@ -4,9 +4,14 @@
     <color name="white">#FFFFFFFF</color>
     <color name="backgroundApp">#131A21</color>
     <color name="items">#E5792C</color>
+    <color name="items2">#1f78b7</color>
+    <color name="backButton">#ffffff</color>
     <color name="navBarItem">#000000</color>
     <color name="colorNavBar">#E5792C</color>
     <color name="logoutRed">#EF3F3F</color>
     <color name="appTitle">#ffffff</color>
+    <color name="textButton">#ffffff</color>
+    <color name="text">#ffffff</color>
+    <color name="tabTitle">#ffffff</color>
     <color name="colorNavBarItemSelected">#eab672</color>
 </resources>
