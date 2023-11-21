@@ -51,6 +51,10 @@ class ProfileFragment : Fragment() {
                 val intent = Intent(requireContext(), LoginActivity::class.java)
                 startActivity(intent)
             }
+            settingsButton.setOnClickListener{
+                val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+                navController.navigate(R.id.settingsFragment)
+            }
         }
     }
 }
