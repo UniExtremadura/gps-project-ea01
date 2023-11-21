@@ -45,7 +45,7 @@ class CommentsAdapter(private var comments: List<Comment>, private val userDao: 
                 // Accede a la base de datos para obtener el usuario correspondiente
                 val user = userDao.getUserById(comment.author ?: 0)
 
-                tvAuthor.text = user
+                tvAuthor.text = user.username
                 tvComment.text = comment.comment
             }
         }
