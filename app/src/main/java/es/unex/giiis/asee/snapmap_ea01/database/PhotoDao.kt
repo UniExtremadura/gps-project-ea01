@@ -5,7 +5,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import es.unex.giiis.asee.snapmap_ea01.data.model.Photo
-import es.unex.giiis.asee.snapmap_ea01.data.model.User
 
 @Dao
 interface PhotoDao {
@@ -14,6 +13,9 @@ interface PhotoDao {
 
     @Query("SELECT * FROM photo")
     suspend fun getAllPhotos(): List<Photo>
+
+    @Query("SELECT * FROM photo WHERE owner IN (SELECT user2 FROM useruserfollowref WHERE user1 = :userId)")
+    suspend fun getPhotosFromFollowedUsers(userId: Long): List<Photo>
 
     @Insert
     suspend fun insertPhoto(photo: Photo): Long

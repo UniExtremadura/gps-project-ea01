@@ -3,12 +3,12 @@ package es.unex.giiis.asee.snapmap_ea01.view.home
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.content.res.Configuration
-import android.content.res.Resources
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
@@ -32,10 +32,11 @@ import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.MarkerOptions
 import es.unex.giiis.asee.snapmap_ea01.R
 import es.unex.giiis.asee.snapmap_ea01.data.model.Photo
+import es.unex.giiis.asee.snapmap_ea01.data.model.User
 import es.unex.giiis.asee.snapmap_ea01.database.SnapMapDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -60,6 +61,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private val LOCATION_PERMISSION_REQUEST_CODE = 1
     private val ZOOM_LEVEL = 15f
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var currentUser: User
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,6 +76,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
         db = SnapMapDatabase.getInstance(requireContext())!!
+
+        currentUser = requireActivity().intent.getSerializableExtra(HomeActivity.USER_INFO) as User
 
         getPhotos()
 
@@ -172,7 +176,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         // Obtiene las fotos de la base de datos y carga las imágenes con Glide
         lifecycleScope.launch {
             try {
-                _photos = db.photoDao().getAllPhotos()
+                _photos = db.photoDao().getPhotosFromFollowedUsers(currentUser.userId!!)
 
                 for (photo in _photos) {
                     val image = ImageView(requireContext())
