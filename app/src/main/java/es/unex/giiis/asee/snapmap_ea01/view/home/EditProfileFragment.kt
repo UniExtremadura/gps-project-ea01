@@ -1,7 +1,6 @@
 package es.unex.giiis.asee.snapmap_ea01.view.home
 
 import android.os.Bundle
-import android.provider.ContactsContract.CommonDataKinds.Email
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -75,15 +74,14 @@ class EditProfileFragment : Fragment() {
                 lifecycleScope.launch {
                     val user = User(
                         user.userId,
-                        etUsername.text.toString(),
+                        etUsername.text.toString().trim(),
                         etAboutMe.text.toString(),
                         etEmail.text.toString(),
                         etPassword.text.toString()
                     )
 
                     // Actualización de los datos de Usuario
-                    val userDao = db.userDao()
-                    userDao.updateUser(user)
+                    db.userDao().updateUser(user)
 
                     Toast.makeText(requireContext(), "Datos actualizados con éxito", Toast.LENGTH_SHORT).show()
 

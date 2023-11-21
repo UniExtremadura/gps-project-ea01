@@ -30,7 +30,7 @@ class LoginActivity : AppCompatActivity() {
         with(binding) {
             btnLogin.setOnClickListener {
                 val check = CredentialCheck.login(
-                    etUsername.text.toString(),
+                    etUsername.text.toString().trim(),
                     etPassword.text.toString()
                 )
                 if(check.fail) notifyInvalidCredentials(check.msg)
@@ -54,12 +54,12 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun checkLogin(){
-        val check = CredentialCheck.login(binding.etUsername.text.toString(),
+        val check = CredentialCheck.login(binding.etUsername.text.toString().trim(),
             binding.etPassword.text.toString())
         if (!check.fail){
             lifecycleScope.launch{
                 val user =
-                    db?.userDao()?.getUser(binding.etUsername.text.toString())
+                    db?.userDao()?.getUser(binding.etUsername.text.toString().trim())
                 if (user != null) {
                     val check =
                         CredentialCheck.passwordOk(binding.etPassword.text.toString(),
