@@ -10,6 +10,8 @@
     <string name="bienvenido">Bienvenido a SnapMap</string>
     <string name="edit">Edit</string>
     <string name="following">Following</string>
+    <string name="follow">Follow</string>
+    <string name="you">You</string>
     <string name="followers">Followers</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="logout">Logout</string>

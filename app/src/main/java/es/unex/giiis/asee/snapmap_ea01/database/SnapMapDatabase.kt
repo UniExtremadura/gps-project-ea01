@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import es.unex.giiis.asee.snapmap_ea01.data.model.User
 import es.unex.giiis.asee.snapmap_ea01.data.model.UserUserFollowRef
 
-@Database(entities = [User::class], [UserUserFollowRef::class], version = 1)
+@Database(entities = [User::class, UserUserFollowRef::class], version = 4)
 abstract class SnapMapDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun userUserFollowRefDao() : UserUserFollowRefDao
@@ -20,7 +20,8 @@ abstract class SnapMapDatabase : RoomDatabase() {
                         context,
                         SnapMapDatabase::class.java,
                         "snapmap.db"
-                    ).build()
+                    ).fallbackToDestructiveMigration()
+                     .build()
                 }
             }
             return INSTANCE

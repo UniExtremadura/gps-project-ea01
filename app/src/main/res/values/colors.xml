@@ -3,10 +3,15 @@
     <color name="black">#000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="backgroundApp">#DED9D9</color>
+    <color name="backButton">#000000</color>
     <color name="items">#E5792C</color>
+    <color name="items2">#1f78b7</color>
     <color name="navBarItem">#000000</color>
     <color name="colorNavBar">#E5792C</color>
     <color name="logoutRed">#EF3F3F</color>
     <color name="appTitle">#000000</color>
+    <color name="tabTitle">#000000</color>
+    <color name="textButton">#000000</color>
+    <color name="text">#000000</color>
     <color name="colorNavBarItemSelected">#eab672</color>
 </resources>
