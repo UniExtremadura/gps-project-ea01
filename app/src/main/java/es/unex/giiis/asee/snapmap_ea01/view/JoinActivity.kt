@@ -54,12 +54,8 @@ class JoinActivity : AppCompatActivity() {
                 join()
             }
             btnLogin.setOnClickListener {
-                //TODO: Navigate to LoginActivity
                 val intent = Intent(this@JoinActivity, LoginActivity::class.java)
                 startActivity(intent)
-            }
-            ivProfilePicture.setOnClickListener {
-                //TODO: Select a profile picture
             }
 
         }
@@ -68,7 +64,7 @@ class JoinActivity : AppCompatActivity() {
     private fun join(){
         with(binding) {
             val check = CredentialCheck.join(
-                etUsername.text.toString(),
+                etUsername.text.toString().trim(),
                 etEmail.text.toString(),
                 etPassword.text.toString(),
                 etAboutMe.text.toString()
@@ -78,7 +74,7 @@ class JoinActivity : AppCompatActivity() {
                 lifecycleScope.launch {
                     val user = User(
                         null,
-                        etUsername.text.toString(),
+                        etUsername.text.toString().trim(),
                         etAboutMe.text.toString(),
                         etEmail.text.toString(),
                         etPassword.text.toString()
@@ -88,7 +84,7 @@ class JoinActivity : AppCompatActivity() {
                     navigateToHomeActivity(
                         User(
                             id,
-                            etUsername.text.toString(),
+                            etUsername.text.toString().trim(),
                             etAboutMe.text.toString(),
                             etEmail.text.toString(),
                             etPassword.text.toString()
