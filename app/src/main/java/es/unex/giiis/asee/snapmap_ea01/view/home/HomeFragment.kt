@@ -7,6 +7,8 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
@@ -31,6 +33,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.MapStyleOptions
 import es.unex.giiis.asee.snapmap_ea01.R
 import es.unex.giiis.asee.snapmap_ea01.data.model.Photo
 import es.unex.giiis.asee.snapmap_ea01.database.SnapMapDatabase
@@ -81,12 +84,40 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         return view
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
-
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+
+        val nightModeFlags = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+
+        if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
+            try {
+                val success = googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                        requireContext(),
+                        R.raw.map_style_dark
+                    )
+                )
+                if (!success) {
+                    // Handle map style load failure here
+                }
+            } catch (e: Resources.NotFoundException) {
+                // Handle exception
+            }
+        } else {
+            try {
+                val success = googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                        requireContext(),
+                        R.raw.map_style_light
+                    )
+                )
+                if (!success) {
+                    // Handle map style load failure here
+                }
+            } catch (e: Resources.NotFoundException) {
+                // Handle exception
+            }
+        }
 
         // Habilita la capa de ubicación para mostrar el punto azul
         if (ActivityCompat.checkSelfPermission(
@@ -121,6 +152,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
                 }
             }
+
             // Habilita la capa de ubicación
             mMap?.isMyLocationEnabled = true
 
