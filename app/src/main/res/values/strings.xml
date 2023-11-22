@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SnapMap_ea01</string>
+    <string name="app_name">SnapMap</string>
     <string name="alreadyHaveAccount">Already have an account? Log in</string>
     <string name="register">Register</string>
     <string name="password">Password</string>
@@ -47,6 +47,9 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="write_your_comment">Write your comment...</string>
+    <string name="add_comment">Add Comment</string>
+    <string name="comments">Comments</string>
 
 
 </resources>

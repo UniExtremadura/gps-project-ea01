@@ -23,6 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/upload"
+        android:textColor="@color/textButton"
         android:backgroundTint="@color/items"
         android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"

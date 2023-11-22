@@ -46,6 +46,33 @@ android {
 
 dependencies {
 
+    val core_version = "1.12.0"
+
+    // Java language implementation
+    implementation("androidx.core:core-ktx:$core_version")
+    // Kotlin
+    implementation("androidx.core:core-ktx:$core_version")
+
+    // To use RoleManagerCompat
+    implementation("androidx.core:core-role:1.0.0")
+
+    // To use the Animator APIs
+    implementation("androidx.core:core-animation:1.0.0-rc01")
+    // To test the Animator APIs
+    androidTestImplementation("androidx.core:core-animation-testing:1.0.0-rc01")
+
+    // Optional - To enable APIs that query the performance characteristics of GMS devices.
+    implementation("androidx.core:core-performance:1.0.0-beta02")
+
+    // Optional - to use ShortcutManagerCompat to donate shortcuts to be used by Google
+    implementation("androidx.core:core-google-shortcuts:1.1.0")
+
+    // Optional - to support backwards compatibility of RemoteViews
+    implementation("androidx.core:core-remoteviews:1.0.0")
+
+    // Optional - APIs for SplashScreen, including compatibility helpers on devices prior Android 12
+    implementation("androidx.core:core-splashscreen:1.1.0-alpha02")
+
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("androidx.navigation:navigation-runtime-ktx:2.7.5")
     implementation("androidx.preference:preference:1.2.1")
@@ -88,6 +115,7 @@ dependencies {
     //Para usar gridle
     implementation ("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
+
 
     //Para usar picasso
     implementation ("com.squareup.picasso:picasso:2.8")

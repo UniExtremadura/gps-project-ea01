@@ -3,7 +3,10 @@
     <color name="black">#000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="backgroundApp">#DED9D9</color>
+    <color name="backgroundSplashScreen">#DDDDDD</color>
     <color name="backButton">#000000</color>
+    <color name="settingsBtn">#222222</color>
+    <color name="settingsIcon">#999999</color>
     <color name="items">#E5792C</color>
     <color name="like">#FFFF99</color>
     <color name="logoutRed">#EF3F3F</color>
