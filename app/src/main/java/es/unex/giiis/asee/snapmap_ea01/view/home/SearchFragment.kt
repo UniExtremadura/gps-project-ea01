@@ -8,6 +8,7 @@ import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import es.unex.giiis.asee.snapmap_ea01.adapters.SearchAdapter
 import es.unex.giiis.asee.snapmap_ea01.data.model.User
 import es.unex.giiis.asee.snapmap_ea01.data.model.UserUserFollowRef
 import es.unex.giiis.asee.snapmap_ea01.database.SnapMapDatabase

@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Comentarios"
+        android:text="@string/comments"
         android:textSize="24sp"
         android:textStyle="bold"
         android:paddingTop="16dp"
@@ -33,7 +33,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:hint="Escribe tu comentario..."
+        android:hint="@string/write_your_comment"
         android:inputType="textMultiLine" />
 
     <!-- Button para añadir comentarios -->
@@ -44,6 +44,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="46dp"
         android:backgroundTint="@color/items"
-        android:text="Añadir Comentario" />
+        android:textColor="@color/textButton"
+        android:text="@string/add_comment" />
 
 </RelativeLayout>

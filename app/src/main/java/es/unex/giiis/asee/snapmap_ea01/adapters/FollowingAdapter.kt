@@ -1,39 +1,35 @@
-package es.unex.giiis.asee.snapmap_ea01.view.home
+package es.unex.giiis.asee.snapmap_ea01.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import es.unex.giiis.asee.snapmap_ea01.R
 import es.unex.giiis.asee.snapmap_ea01.data.model.User
-import es.unex.giiis.asee.snapmap_ea01.databinding.FragmentSearchBinding
 import es.unex.giiis.asee.snapmap_ea01.databinding.SearchListItemBinding
 
-class FollowersAdapter(
-    private var users: List<User>,
+class FollowingAdapter(
+    var users: List<User>,
     private val context: Context?,
-    private val usersFollowingList: MutableList<User> = mutableListOf(),
     private val actualUser: User
-) : RecyclerView.Adapter<FollowersAdapter.ShowViewHolder>() {
+) : RecyclerView.Adapter<FollowingAdapter.ShowViewHolder>() {
 
     interface OnFollowButtonClickListener {
         fun onFollowButtonClick(user: User, flag: Boolean)
     }
 
+    // Propiedad para almacenar el escuchador del clic del botón
     private var followButtonClickListener: OnFollowButtonClickListener? = null
 
     class ShowViewHolder(
         private val binding: SearchListItemBinding,
-        private val adapter: FollowersAdapter
+        private val adapter: FollowingAdapter,
     ) : RecyclerView.ViewHolder(binding.root) {
-
         fun bind(user: User) {
             with(binding) {
                 val isCurrentUser = user.userId == adapter.actualUser.userId
-                val isFollowing = adapter.usersFollowingList.any { it.userId == user.userId }
+                val isFollowing = adapter.users.any { it.userId == user.userId }
 
                 btnSeguir.setBackgroundColor(
                     ContextCompat.getColor(
@@ -84,10 +80,8 @@ class FollowersAdapter(
 
     override fun getItemCount() = users.size
 
-    fun updateData(updatedUsers: List<User>, updatedFollowers: List<User>) {
+    fun updateUsers(updatedUsers: List<User>) {
         users = updatedUsers
-        usersFollowingList.clear()
-        usersFollowingList.addAll(updatedFollowers)
         notifyDataSetChanged()
     }
 }

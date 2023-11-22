@@ -1,4 +1,4 @@
-package es.unex.giiis.asee.snapmap_ea01.view.home
+package es.unex.giiis.asee.snapmap_ea01.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -6,34 +6,31 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import es.unex.giiis.asee.snapmap_ea01.R
-import es.unex.giiis.asee.snapmap_ea01.databinding.SearchListItemBinding
 import es.unex.giiis.asee.snapmap_ea01.data.model.User
+import es.unex.giiis.asee.snapmap_ea01.databinding.SearchListItemBinding
 
-class SearchAdapter(
-    var users: List<User>,
+class FollowersAdapter(
+    private var users: List<User>,
     private val context: Context?,
-    private var usersList: List<User> = mutableListOf(),
+    private val usersFollowingList: MutableList<User> = mutableListOf(),
     private val actualUser: User
-) : RecyclerView.Adapter<SearchAdapter.ShowViewHolder>() {
+) : RecyclerView.Adapter<FollowersAdapter.ShowViewHolder>() {
 
-    // Interfaz para gestionar el clic del botón
     interface OnFollowButtonClickListener {
         fun onFollowButtonClick(user: User, flag: Boolean)
     }
 
-    // Propiedad para almacenar el escuchador del clic del botón
     private var followButtonClickListener: OnFollowButtonClickListener? = null
 
-    // Clase interna ViewHolder
     class ShowViewHolder(
         private val binding: SearchListItemBinding,
-        private val adapter: SearchAdapter,
-
+        private val adapter: FollowersAdapter
     ) : RecyclerView.ViewHolder(binding.root) {
+
         fun bind(user: User) {
             with(binding) {
                 val isCurrentUser = user.userId == adapter.actualUser.userId
-                val isFollowing = adapter.usersList.any { it.userId == user.userId }
+                val isFollowing = adapter.usersFollowingList.any { it.userId == user.userId }
 
                 btnSeguir.setBackgroundColor(
                     ContextCompat.getColor(
@@ -68,7 +65,6 @@ class SearchAdapter(
         }
     }
 
-    // Método para establecer el escuchador del clic del botón desde fuera del adaptador
     fun setOnFollowButtonClickListener(listener: OnFollowButtonClickListener) {
         followButtonClickListener = listener
     }
@@ -79,20 +75,16 @@ class SearchAdapter(
         return ShowViewHolder(binding, this)
     }
 
-    override fun getItemCount() = users.size
-
     override fun onBindViewHolder(holder: ShowViewHolder, position: Int) {
         holder.bind(users[position])
     }
 
-    // Método para actualizar la lista de usuarios
-    fun updateUsers(updatedUsers: List<User>?, followedUsers: List<User>?) {
-        if (updatedUsers != null) {
-            users = updatedUsers
-        }
-        if (followedUsers != null) {
-            usersList = followedUsers
-        }
+    override fun getItemCount() = users.size
+
+    fun updateData(updatedUsers: List<User>, updatedFollowers: List<User>) {
+        users = updatedUsers
+        usersFollowingList.clear()
+        usersFollowingList.addAll(updatedFollowers)
         notifyDataSetChanged()
     }
 }
