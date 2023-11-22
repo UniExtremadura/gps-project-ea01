@@ -22,7 +22,7 @@ interface CommentDao {
     @Delete
     suspend fun deleteComment(comment: Comment)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(comments: List<Comment>)
 
     @Query("SELECT * FROM comment")

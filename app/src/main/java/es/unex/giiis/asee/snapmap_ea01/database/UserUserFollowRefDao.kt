@@ -29,6 +29,6 @@ interface UserUserFollowRefDao {
     @Delete
     suspend fun deleteUserFollowRef(userUserFollowRef: UserUserFollowRef)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(userFollows: List<UserUserFollowRef>)
 }

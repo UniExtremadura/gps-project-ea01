@@ -23,7 +23,7 @@ interface UserPhotoLikeRefDao {
     @Delete
     suspend fun deletePhotoLikeRef(userPhotoLikeRef: UserPhotoLikeRef)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(userLikes: List<UserPhotoLikeRef>)
 
     @Query("SELECT COUNT(*) FROM userphotolikeref WHERE userId = :userId AND photoId = :photoId")

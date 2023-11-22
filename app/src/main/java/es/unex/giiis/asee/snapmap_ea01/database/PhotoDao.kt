@@ -20,6 +20,6 @@ interface PhotoDao {
     @Insert
     suspend fun insertPhoto(photo: Photo): Long
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(photos: List<Photo>)
 }
