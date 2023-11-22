@@ -4,6 +4,7 @@ package es.unex.giiis.asee.snapmap_ea01.view.home
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -59,6 +60,20 @@ class HomeActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
 
         binding.bottomNavigation.setupWithNavController(navHostFragment.navController)
+
+        navHostFragment.navController.addOnDestinationChangedListener { _, destination, _ ->
+            if ((destination.id == R.id.commentsFragment) ||
+                (destination.id == R.id.settingsFragment) ||
+                (destination.id == R.id.editProfileFragment) ||
+                (destination.id == R.id.followersFragment) ||
+                (destination.id == R.id.followingFragment) ||
+                (destination.id == R.id.imageFragment) ||
+                (destination.id == R.id.tabsFollowFragment)){
+                binding.bottomNavigation.visibility = View.GONE
+            } else {
+                binding.bottomNavigation.visibility = View.VISIBLE
+            }
+        }
 
     }
 
