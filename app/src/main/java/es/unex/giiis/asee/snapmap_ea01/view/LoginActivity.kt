@@ -1,5 +1,6 @@
 package es.unex.giiis.asee.snapmap_ea01.view
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -85,11 +86,14 @@ class LoginActivity : AppCompatActivity() {
                 val user =
                     db?.userDao()?.getUserByUsername(binding.etUsername.text.toString().trim())
                 if (user != null) {
-                    val check =
-                        CredentialCheck.passwordOk(binding.etPassword.text.toString(),
-                            user.password)
-                    if (check.fail) notifyInvalidCredentials(check.msg)
-                    else navigateToHomeActivity(user!!, check.msg)
+                    val check = CredentialCheck.passwordOk(binding.etPassword.text.toString(), user.password)
+                    if (check.fail) {
+                        notifyInvalidCredentials(check.msg)
+                    }
+                    else {
+                        navigateToHomeActivity(user, check.msg)
+                        finish()
+                    }
                 }
                 else notifyInvalidCredentials("Invalid username")
             }

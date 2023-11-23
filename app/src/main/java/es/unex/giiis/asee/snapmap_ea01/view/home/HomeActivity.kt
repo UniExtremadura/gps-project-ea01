@@ -11,6 +11,7 @@ import androidx.navigation.ui.setupWithNavController
 import es.unex.giiis.asee.snapmap_ea01.R
 import es.unex.giiis.asee.snapmap_ea01.data.model.User
 import es.unex.giiis.asee.snapmap_ea01.databinding.ActivityHomeBinding
+import es.unex.giiis.asee.snapmap_ea01.view.LoginActivity
 
 class HomeActivity : AppCompatActivity() {
 

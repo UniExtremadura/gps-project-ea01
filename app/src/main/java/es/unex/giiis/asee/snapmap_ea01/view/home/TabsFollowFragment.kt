@@ -5,8 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.Navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
+import es.unex.giiis.asee.snapmap_ea01.data.model.User
 import es.unex.giiis.asee.snapmap_ea01.databinding.FragmentTabsFollowBinding
 
 
@@ -35,12 +38,24 @@ class TabsFollowFragment : Fragment() {
         val pagerAdapter = TabsPagerAdapter(childFragmentManager)
         viewPager.adapter = pagerAdapter
 
+        val actualUser = requireActivity().intent.getSerializableExtra(HomeActivity.USER_INFO) as User
+        binding.tVUser.text = actualUser.username
+
         tabLayout.setupWithViewPager(viewPager)
 
         val initialTabIndex = arguments?.getInt("initialTabIndex", 0) ?: 0
         viewPager.currentItem = initialTabIndex
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.btnBack.setOnClickListener {
+            val navController = findNavController()
+            navController.navigateUp()
+        }
     }
 
     private inner class TabsPagerAdapter(fm: androidx.fragment.app.FragmentManager) :
