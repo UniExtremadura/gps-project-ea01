@@ -28,8 +28,8 @@
     <string name="upload">Upload</string>
 
     <string name="autologin">Autologin</string>
-    <string name="sorting">Sorting</string>
-    <string name="sorting_title">Enable sorting</string>
+    <string name="darkmode">Darkmode</string>
+    <string name="darkmode_title">Enable darkmode</string>
     <string name="rememberme">Remember me</string>
     <string name="title">Title</string>
     <string name="criteria_title">Sorting criteria</string>

@@ -1,12 +1,9 @@
 package es.unex.giiis.asee.snapmap_ea01.view
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
@@ -44,6 +41,7 @@ class LoginActivity : AppCompatActivity() {
         val rememberme = preferences["rememberme"] as Boolean? ?: false
         val username = preferences["username"] as String? ?: ""
         val password = preferences["password"] as String? ?: ""
+        val s = preferences["darkmode"] as Boolean? ?: false
 
         if (rememberme) {
             binding.etUsername.setText(username)
