@@ -89,6 +89,9 @@ class LoginActivity : AppCompatActivity() {
                         notifyInvalidCredentials(check.msg)
                     }
                     else {
+                        // Guardar el nombre de usuario y contraseña en SharedPreferences
+                        saveUserCredentials(binding.etUsername.text.toString().trim(), binding.etPassword.text.toString())
+
                         navigateToHomeActivity(user, check.msg)
                         finish()
                     }
@@ -97,5 +100,13 @@ class LoginActivity : AppCompatActivity() {
             }
         }
         else notifyInvalidCredentials(check.msg)
+    }
+
+    private fun saveUserCredentials(username: String, password: String) {
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val editor = preferences.edit()
+        editor.putString("username", username)
+        editor.putString("password", password)
+        editor.apply()
     }
 }

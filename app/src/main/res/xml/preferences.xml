@@ -14,23 +14,17 @@
             android:title="@string/rememberme"
             app:key="rememberme" />
         <EditTextPreference
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:defaultValue="Default user"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            android:title="@string/username"
-            app:key="username"
-            app:useSimpleSummaryProvider="true" />
+            android:key="username"
+            android:title="Username"
+            android:summary="%s"
+            android:dialogTitle="Enter Username"/>
+
         <EditTextPreference
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:defaultValue="Default password"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            android:title="@string/password"
-            app:key="password"
-            app:useSimpleSummaryProvider="true" />
+            android:key="password"
+            android:title="Password"
+            android:summary="%s"
+            android:dialogTitle="Enter Password"
+            android:inputType="textPassword"/>
     </PreferenceCategory>
     <PreferenceCategory
         android:layout_width="wrap_content"
