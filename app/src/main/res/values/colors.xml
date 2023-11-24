@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
+    <color name="black">#000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="backgroundApp">#DED9D9</color>
+    <color name="backgroundSplashScreen">#DDDDDD</color>
+    <color name="backButton">#000000</color>
+    <color name="settingsBtn">#222222</color>
+    <color name="settingsIcon">#999999</color>
+    <color name="items">#E5792C</color>
+    <color name="like">#FFFF99</color>
+    <color name="logoutRed">#EF3F3F</color>
+    <color name="items2">#1f78b7</color>
+    <color name="navBarItem">#000000</color>
+    <color name="colorNavBar">#E5792C</color>
+    <color name="appTitle">#000000</color>
+    <color name="tabTitle">#000000</color>
+    <color name="textButton">#000000</color>
+    <color name="text">#000000</color>
+    <color name="colorNavBarItemSelected">#eab672</color>
 </resources>

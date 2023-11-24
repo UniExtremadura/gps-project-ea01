@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="@string/autologin">
+
+        <SwitchPreference
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:defaultValue="false"
+            android:title="@string/rememberme"
+            app:key="rememberme" />
+        <EditTextPreference
+            android:key="username"
+            android:title="Username"
+            android:summary="%s"
+            android:dialogTitle="Enter Username"/>
+
+        <EditTextPreference
+            android:key="password"
+            android:title="Password"
+            android:summary="%s"
+            android:dialogTitle="Enter Password"
+            android:inputType="textPassword"/>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="@string/darkmode">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:title="@string/darkmode_title"
+            android:key="darkmode"/>
+    </PreferenceCategory>
+</PreferenceScreen>

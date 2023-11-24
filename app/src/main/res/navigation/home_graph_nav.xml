@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_graph_nav"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="es.unex.giiis.asee.snapmap_ea01.view.home.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_imageFragment"
+            app:destination="@id/imageFragment">
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/cameraFragment"
+        android:name="es.unex.giiis.asee.snapmap_ea01.view.home.CameraFragment"
+        android:label="fragment_camera"
+        tools:layout="@layout/fragment_camera" />
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="es.unex.giiis.asee.snapmap_ea01.view.home.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="es.unex.giiis.asee.snapmap_ea01.view.home.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_tabsFollowFragment"
+            app:destination="@id/tabsFollowFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/imageFragment"
+        android:name="es.unex.giiis.asee.snapmap_ea01.view.home.ImageFragment"
+        android:label="fragment_image"
+        tools:layout="@layout/fragment_image">
+        <argument
+            android:name="photoId"
+            app:argType="long"
+            android:defaultValue="-1L" />
+        <action
+            android:id="@+id/action_imageFragment_to_commentsFragment"
+            app:destination="@id/commentsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/commentsFragment"
+        android:name="es.unex.giiis.asee.snapmap_ea01.view.home.CommentsFragment"
+        android:label="fragment_comments"
+        tools:layout="@layout/fragment_comments" />
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="es.unex.giiis.asee.snapmap_ea01.view.home.EditProfileFragment"
+        android:label="EditProfileFragment" >
+        <action
+            android:id="@+id/action_editProfileFragment_to_profileFragment2"
+            app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/tabsFollowFragment"
+        android:name="es.unex.giiis.asee.snapmap_ea01.view.home.TabsFollowFragment"
+        android:label="fragment_tabs_follow"
+        tools:layout="@layout/fragment_tabs_follow" >
+        <action
+            android:id="@+id/action_tabsFollowFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_tabsFollowFragment_to_followingFragment"
+            app:destination="@id/followingFragment" />
+        <action
+            android:id="@+id/action_tabsFollowFragment_to_followersFragment"
+            app:destination="@id/followersFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/followersFragment"
+        android:name="es.unex.giiis.asee.snapmap_ea01.view.home.FollowersFragment"
+        android:label="fragment_followers"
+        tools:layout="@layout/fragment_followers" >
+        <action
+            android:id="@+id/action_followersFragment_to_tabsFollowFragment"
+            app:destination="@id/tabsFollowFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/followingFragment"
+        android:name="es.unex.giiis.asee.snapmap_ea01.view.home.FollowingFragment"
+        android:label="fragment_following"
+        tools:layout="@layout/fragment_following" >
+        <action
+            android:id="@+id/action_followingFragment_to_tabsFollowFragment"
+            app:destination="@id/tabsFollowFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="es.unex.giiis.asee.snapmap_ea01.view.home.SettingsFragment"
+        android:label="SettingsFragment" />
+    <action
+        android:id="@+id/action_profileFragment_to_settingsFragment"
+        app:destination="@id/settingsFragment" />
+</navigation>

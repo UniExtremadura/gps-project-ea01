@@ -1,3 +1,55 @@
 <resources>
-    <string name="app_name">SnapMap_ea01</string>
+    <string name="app_name">SnapMap</string>
+    <string name="alreadyHaveAccount">Already have an account? Log in</string>
+    <string name="register">Register</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="about_me">About Me</string>
+    <string name="username">Username</string>
+    <string name="login">Login </string>
+    <string name="bienvenido">Bienvenido a SnapMap</string>
+    <string name="edit">Edit</string>
+    <string name="following">Following</string>
+    <string name="follow">Follow</string>
+    <string name="you">You</string>
+    <string name="followers">Followers</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="logout">Logout</string>
+    />
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="home_option">Home</string>
+    <string name="search_option">Search</string>
+    <string name="camera_option">Camera</string>
+    <string name="profile_option">Profile</string>
+    <string name="from_username">from username</string>
+    <string name="welcome_to_snapmap">Welcome to SnapMap</string>
+    <string name="don_t_have_an_account_yet_create_an_account">Don\'t have an account yet? Create an account</string>
+    <string name="upload">Upload</string>
+
+    <string name="autologin">Autologin</string>
+    <string name="darkmode">Darkmode</string>
+    <string name="darkmode_title">Enable darkmode</string>
+    <string name="rememberme">Remember me</string>
+    <string name="title">Title</string>
+    <string name="criteria_title">Sorting criteria</string>
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="write_your_comment">Write your comment...</string>
+    <string name="add_comment">Add Comment</string>
+    <string name="comments">Comments</string>
+
+
 </resources>
