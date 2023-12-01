@@ -14,7 +14,7 @@ private val service: DogAPI by lazy {
         .build()
 
     val retrofit = Retrofit.Builder()
-        .baseUrl("https://dog.ceo/api/breeds/image/")
+        .baseUrl("https://picsum.photos/")
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
@@ -25,8 +25,12 @@ private val service: DogAPI by lazy {
 fun getNetworkService() = service
 
 interface DogAPI {
-    @GET("random")
+
+    @GET("200")
     suspend fun getDog(): PhotoURI
+
+    @GET("v2/list?limit=15")
+    suspend fun getImages(): List<PhotoURI>
 }
 
 class APIError(message: String, cause: Throwable?) : Throwable(message, cause)
