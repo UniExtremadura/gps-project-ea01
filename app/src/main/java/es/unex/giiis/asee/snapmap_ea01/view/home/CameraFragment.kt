@@ -17,6 +17,7 @@ import com.google.android.gms.location.LocationServices
 import es.unex.giiis.asee.snapmap_ea01.R
 import es.unex.giiis.asee.snapmap_ea01.api.APIError
 import es.unex.giiis.asee.snapmap_ea01.api.getNetworkService
+import es.unex.giiis.asee.snapmap_ea01.data.api.PhotoURI
 import es.unex.giiis.asee.snapmap_ea01.data.model.Photo
 import es.unex.giiis.asee.snapmap_ea01.data.model.User
 import es.unex.giiis.asee.snapmap_ea01.database.SnapMapDatabase
@@ -25,6 +26,7 @@ import kotlinx.coroutines.launch
 
 class CameraFragment : Fragment() {
     private var photo = ""
+    private lateinit var photosURI : List<PhotoURI>
     private val LOCATION_PERMISSION_REQUEST_CODE = 1
     private lateinit var binding : FragmentCameraBinding
     private lateinit var db: SnapMapDatabase
@@ -32,6 +34,7 @@ class CameraFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = FragmentCameraBinding.inflate(layoutInflater)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
     }
@@ -44,7 +47,8 @@ class CameraFragment : Fragment() {
 
         db = SnapMapDatabase.getInstance(requireContext())!!
 
-        updatePhoto()
+        getListOfPhotos()
+
         setUpListeners()
 
         return binding.root
@@ -52,17 +56,25 @@ class CameraFragment : Fragment() {
 
     private fun updatePhoto() {
         with(binding){
-            lifecycleScope.launch {
-                try{
-                    photo = fetchDog()
-                    Log.d("API", "Dog: $photo")
-                    Glide.with(requireContext())
-                        .load(photo)
-                        .placeholder(R.drawable.baseline_access_time_24)
-                        .into(iVDog)
-                } catch (e: APIError) {
-                    Log.e("MainActivity", "Error fetching dog", e)
-                }
+
+            //get random photo from photosURI
+            val random = (0..photosURI.size).random()
+            photo = photosURI[random].uri.toString()
+            Glide.with(requireContext())
+                .load(photo)
+                .placeholder(R.drawable.baseline_access_time_24)
+                .into(iVDog)
+        }
+    }
+
+    private fun getListOfPhotos() {
+        lifecycleScope.launch {
+            try {
+                photosURI = fetchPhotos()
+                Log.d("MainActivity", "Photos fetched: $photosURI")
+                updatePhoto()
+            } catch (e: APIError) {
+                Log.e("MainActivity", "Error fetching photos", e)
             }
         }
     }
@@ -134,6 +146,15 @@ class CameraFragment : Fragment() {
         } catch (cause: Throwable) {
             Log.e("API", "Error fetching dog", cause)
             throw APIError("Error fetching dog", cause)
+        }
+    }
+
+    private suspend fun fetchPhotos(): List<PhotoURI> {
+        try {
+            return getNetworkService().getImages()
+        } catch (cause: Throwable) {
+            Log.e("API", "Error fetching photos", cause)
+            throw APIError("Error fetching photos", cause)
         }
     }
 }
