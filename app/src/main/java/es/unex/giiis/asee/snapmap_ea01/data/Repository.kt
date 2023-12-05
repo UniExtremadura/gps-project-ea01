@@ -1,12 +1,13 @@
 package es.unex.giiis.asee.snapmap_ea01.data
 
 import es.unex.giiis.asee.snapmap_ea01.api.APIError
+import es.unex.giiis.asee.snapmap_ea01.api.DogAPI
 import es.unex.giiis.asee.snapmap_ea01.data.api.PhotoURI
 import es.unex.giiis.asee.snapmap_ea01.database.PhotoDao
 
 class Repository private constructor(
     private val photoDao: PhotoDao,
-    private val networkService: PhotoURI
+    private val networkService: DogAPI
 ) {
     private var lastUpdateTimeMillis: Long = 0L
 
@@ -58,7 +59,7 @@ class Repository private constructor(
 
         fun getInstance(
             photoDao: PhotoDao,
-            photoAPI: PhotoURI
+            photoAPI: DogAPI
         ): Repository {
             return INSTANCE ?: synchronized(this) {
                 INSTANCE ?: Repository(photoDao, photoAPI).also { INSTANCE = it }
