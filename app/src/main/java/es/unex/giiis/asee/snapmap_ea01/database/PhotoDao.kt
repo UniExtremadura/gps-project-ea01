@@ -1,5 +1,6 @@
 package es.unex.giiis.asee.snapmap_ea01.database
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -20,6 +21,13 @@ interface PhotoDao {
     @Insert
     suspend fun insertPhoto(photo: Photo): Long
 
+    @Query("SELECT * FROM photo")
+    fun getPhotos(): LiveData<List<Photo>>
+
+    @Query("SELECT count(*) FROM photo")
+    suspend fun getNumberOfPhotos(): Long
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(photos: List<Photo>)
+
 }
