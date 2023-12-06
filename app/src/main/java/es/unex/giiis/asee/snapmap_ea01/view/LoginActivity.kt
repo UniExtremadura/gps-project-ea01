@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
+import es.unex.giiis.asee.snapmap_ea01.api.getNetworkService
+import es.unex.giiis.asee.snapmap_ea01.data.Repository
 import es.unex.giiis.asee.snapmap_ea01.data.model.User
 import es.unex.giiis.asee.snapmap_ea01.database.SnapMapDatabase
 import es.unex.giiis.asee.snapmap_ea01.databinding.ActivityLoginBinding
@@ -17,6 +19,7 @@ import kotlinx.coroutines.launch
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
+    private lateinit var repository: Repository
     private lateinit var db: SnapMapDatabase
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -28,6 +31,8 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         db = SnapMapDatabase.getInstance(applicationContext)!!
+
+        repository = Repository.getInstance(db.userDao(), db.photoURIDao(), getNetworkService())
 
         setUpListeners()
 
@@ -82,7 +87,7 @@ class LoginActivity : AppCompatActivity() {
         if (!check.fail){
             lifecycleScope.launch{
                 val user =
-                    db?.userDao()?.getUserByUsername(binding.etUsername.text.toString().trim())
+                    repository.getUserByUsername(binding.etUsername.text.toString().trim())
                 if (user != null) {
                     val check = CredentialCheck.passwordOk(binding.etPassword.text.toString(), user.password)
                     if (check.fail) {

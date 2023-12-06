@@ -46,7 +46,7 @@ class CameraFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         db = SnapMapDatabase.getInstance(requireContext())!!
-        repository = Repository.getInstance(db.photoDao(), db.photoURIDao(), getNetworkService())
+        repository = Repository.getInstance(db.userDao(), db.photoURIDao(), getNetworkService())
     }
 
     override fun onCreateView(
