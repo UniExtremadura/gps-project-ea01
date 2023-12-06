@@ -12,9 +12,6 @@ interface PhotoDao {
     @Query("SELECT * FROM photo WHERE photoId = :photoId LIMIT 1")
     suspend fun getPhoto(photoId: Long): Photo
 
-    @Query("SELECT * FROM photo")
-    suspend fun getAllPhotos(): List<Photo>
-
     @Query("SELECT * FROM photo WHERE owner = :userId OR owner IN (SELECT user2 FROM useruserfollowref WHERE user1 = :userId)")
     suspend fun getPhotosFromFollowedUsers(userId: Long): List<Photo>
 
@@ -23,9 +20,6 @@ interface PhotoDao {
 
     @Query("SELECT * FROM photo")
     fun getPhotos(): LiveData<List<Photo>>
-
-    @Query("SELECT count(*) FROM photo")
-    suspend fun getNumberOfPhotos(): Long
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(photos: List<Photo>)

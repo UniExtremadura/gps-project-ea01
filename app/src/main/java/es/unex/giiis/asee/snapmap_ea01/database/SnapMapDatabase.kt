@@ -4,17 +4,18 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room.databaseBuilder
 import androidx.room.RoomDatabase
+import es.unex.giiis.asee.snapmap_ea01.data.model.Comment
 import es.unex.giiis.asee.snapmap_ea01.data.model.Photo
+import es.unex.giiis.asee.snapmap_ea01.data.model.PhotoURI_DB
 import es.unex.giiis.asee.snapmap_ea01.data.model.User
 import es.unex.giiis.asee.snapmap_ea01.data.model.UserPhotoLikeRef
 import es.unex.giiis.asee.snapmap_ea01.data.model.UserUserFollowRef
-import es.unex.giiis.asee.snapmap_ea01.data.model.Comment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-@Database(entities = [User::class, Photo::class, UserPhotoLikeRef::class, UserUserFollowRef::class, Comment::class], version = 5)
+@Database(entities = [User::class, Photo::class, UserPhotoLikeRef::class, UserUserFollowRef::class, Comment::class, PhotoURI_DB::class], version = 6)
 abstract class SnapMapDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
 
@@ -25,6 +26,8 @@ abstract class SnapMapDatabase : RoomDatabase() {
     abstract fun userUserFollowRefDao(): UserUserFollowRefDao
 
     abstract fun commentDao(): CommentDao
+
+    abstract fun photoURIDao(): PhotoURIDao
 
     companion object {
         private var INSTANCE: SnapMapDatabase? = null
