@@ -6,7 +6,6 @@ import es.unex.giiis.asee.snapmap_ea01.database.PhotoDao
 import es.unex.giiis.asee.snapmap_ea01.database.PhotoURIDao
 
 class Repository private constructor(
-    private val photoDao: PhotoDao,
     private val photoURIDao: PhotoURIDao,
     private val networkService: DogAPI
 ) {
@@ -21,7 +20,8 @@ class Repository private constructor(
      * cache-invalidation policy.
      */
     suspend fun tryUpdateRecentPhotosCache() {
-        if (shouldUpdatePhotosCache()) fetchRecentPhotos()
+        if (shouldUpdatePhotosCache())
+            fetchRecentPhotos()
     }
 
     /**
@@ -31,12 +31,6 @@ class Repository private constructor(
         try {
 
             val photos = networkService.getImages().map { it.toPhoto() }
-            /*
-                Before inserting the photos, it is necessary to delete the previous ones, as their
-                IDs will be different. This is because all the photos come from an API that provides
-                random photos.
-             */
-            photoURIDao.deletePhotos()
             photoURIDao.insertPhotos(photos)
             lastUpdateTimeMillis = System.currentTimeMillis()
 
@@ -55,7 +49,7 @@ class Repository private constructor(
     }
 
     companion object {
-        private const val MIN_TIME_FROM_LAST_FETCH_MILLIS: Long = 30000
+        private const val MIN_TIME_FROM_LAST_FETCH_MILLIS: Long = 3000
 
         @Volatile
         private var INSTANCE: Repository? = null
@@ -66,7 +60,7 @@ class Repository private constructor(
             photoAPI: DogAPI
         ): Repository {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: Repository(photoDao, photoURIDao, photoAPI).also { INSTANCE = it }
+                INSTANCE ?: Repository(photoURIDao, photoAPI).also { INSTANCE = it }
             }
         }
     }

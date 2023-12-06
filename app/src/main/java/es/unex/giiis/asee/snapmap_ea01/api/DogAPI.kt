@@ -29,7 +29,7 @@ interface DogAPI {
     @GET("200")
     suspend fun getDog(): PhotoURI
 
-    @GET("v2/list?limit=15")
+    @GET("v2/list?limit=30")
     suspend fun getImages(): List<PhotoURI>
 }
 

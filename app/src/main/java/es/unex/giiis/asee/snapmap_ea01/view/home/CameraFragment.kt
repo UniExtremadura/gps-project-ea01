@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import es.unex.giiis.asee.snapmap_ea01.R
+import es.unex.giiis.asee.snapmap_ea01.api.APIError
 import es.unex.giiis.asee.snapmap_ea01.api.getNetworkService
 import es.unex.giiis.asee.snapmap_ea01.data.Repository
 import es.unex.giiis.asee.snapmap_ea01.data.model.Photo
@@ -23,6 +24,7 @@ import es.unex.giiis.asee.snapmap_ea01.data.model.PhotoURI_DB
 import es.unex.giiis.asee.snapmap_ea01.data.model.User
 import es.unex.giiis.asee.snapmap_ea01.database.SnapMapDatabase
 import es.unex.giiis.asee.snapmap_ea01.databinding.FragmentCameraBinding
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class CameraFragment : Fragment() {
@@ -64,7 +66,7 @@ class CameraFragment : Fragment() {
         with(binding){
             if(!photosURI.isEmpty()) {
                 //get random photo from photosURI
-                val random = (0..photosURI.size).random()
+                val random = (0..<photosURI.size).random()
                 photo = photosURI[random].uri.toString()
                 Glide.with(requireContext())
                     .load(photo)
@@ -76,7 +78,7 @@ class CameraFragment : Fragment() {
 
     private fun getListOfPhotos() {
         subscribeUi()
-        //launchDataLoad { repository.tryUpdateRecentPhotosCache() }
+        launchDataLoad { repository.tryUpdateRecentPhotosCache() }
     }
 
     private fun subscribeUi() {
@@ -150,18 +152,19 @@ class CameraFragment : Fragment() {
             }
         }
     }
-    /*
+
     private fun launchDataLoad(block: suspend () -> Unit): Job {
         return lifecycleScope.launch {
             try {
                 // Add a reload Cache message
-                Toast.makeText(requireContext(), "Updating cache", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Checking for updates from cache", Toast.LENGTH_SHORT).show()
                 block()
             } catch (error: APIError) {
                 Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
             } finally {
-                Toast.makeText(requireContext(), "Cache updated successfully", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Checked successfully", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
-    }*/
+    }
 }
