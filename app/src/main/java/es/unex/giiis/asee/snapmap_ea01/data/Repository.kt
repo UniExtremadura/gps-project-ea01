@@ -3,14 +3,19 @@ package es.unex.giiis.asee.snapmap_ea01.data
 import es.unex.giiis.asee.snapmap_ea01.api.APIError
 import es.unex.giiis.asee.snapmap_ea01.api.DogAPI
 import es.unex.giiis.asee.snapmap_ea01.data.model.User
+import es.unex.giiis.asee.snapmap_ea01.database.CommentDao
 import es.unex.giiis.asee.snapmap_ea01.database.PhotoDao
 import es.unex.giiis.asee.snapmap_ea01.database.PhotoURIDao
 import es.unex.giiis.asee.snapmap_ea01.database.UserDao
+import es.unex.giiis.asee.snapmap_ea01.database.UserPhotoLikeRefDao
 import es.unex.giiis.asee.snapmap_ea01.database.UserUserFollowRefDao
 
 class Repository(
     private val userDao: UserDao,
-    private val userUserFollowDao: UserUserFollowRefDao,
+    private val userUserFollowRefDao: UserUserFollowRefDao,
+    private val userPhotoLikeRefDao: UserPhotoLikeRefDao,
+    private val commentDao: CommentDao,
+    private val photoDao: PhotoDao,
     private val photoURIDao: PhotoURIDao,
     private val networkService: DogAPI
 ) {
@@ -69,12 +74,15 @@ class Repository(
 
         fun getInstance(
             userDao: UserDao,
-            userUserFollowRef: UserUserFollowRefDao,
+            userUserFollowRefDao: UserUserFollowRefDao,
+            userPhotoLikeRefDao: UserPhotoLikeRefDao,
+            commentDao: CommentDao,
+            photoDao: PhotoDao,
             photoURIDao: PhotoURIDao,
             photoAPI: DogAPI
         ): Repository {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: Repository(userDao, userUserFollowRef, photoURIDao, photoAPI).also { INSTANCE = it }
+                INSTANCE ?: Repository(userDao,userUserFollowRefDao, userPhotoLikeRefDao, commentDao, photoDao, photoURIDao, photoAPI).also { INSTANCE = it }
             }
         }
     }
