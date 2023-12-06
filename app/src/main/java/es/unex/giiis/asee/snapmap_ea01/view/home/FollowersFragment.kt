@@ -1,10 +1,10 @@
 package es.unex.giiis.asee.snapmap_ea01.view.home
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import es.unex.giiis.asee.snapmap_ea01.adapters.FollowersAdapter
@@ -75,22 +75,22 @@ class FollowersFragment : Fragment() {
             val userFollowRefList = actualUser.userId?.let { db.userUserFollowRefDao().getFollowers(it) }
             val usersList = mutableListOf<User>()
             val usersFollowersList = mutableListOf<User>()
-
+            /*
             if (userFollowRefList != null) {
                 for (userFollow in userFollowRefList) {
                     val id = userFollow.user1
                     usersList.add(db.userDao().getUserById(id))
                 }
-            }
+            }*/
 
             val userFollowRefList2 = actualUser.userId?.let { db.userUserFollowRefDao().getFollowing(it) }
-
+            /*
             if (userFollowRefList2 != null) {
                 for (userFollow in userFollowRefList2) {
                     val id = userFollow.user2
                     usersFollowersList.add(db.userDao().getUserById(id))
                 }
-            }
+            }*/
 
             adapter.updateData(usersList, usersFollowersList)
         }

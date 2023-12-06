@@ -10,7 +10,14 @@ import es.unex.giiis.asee.snapmap_ea01.data.model.User
 class ProfileViewModel (
     private val repository: Repository
 ) : ViewModel(){
+
+    val followers = repository.followers
+    val following = repository.following
     var user: User? = null
+        set(value) {
+            field = value
+            repository.setUserid(value!!.userId!!)
+        }
     companion object {
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")

@@ -1,13 +1,13 @@
 package es.unex.giiis.asee.snapmap_ea01.database
 
-import es.unex.giiis.asee.snapmap_ea01.data.model.UserUserFollowRef
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import es.unex.giiis.asee.snapmap_ea01.data.model.User
+import es.unex.giiis.asee.snapmap_ea01.data.model.UserUserFollowRef
 
 @Dao
 interface UserUserFollowRefDao {
@@ -15,10 +15,10 @@ interface UserUserFollowRefDao {
     suspend fun getUserUserFollowRef(user1: Long, user2: Long): UserUserFollowRef?
 
     @Query("SELECT * FROM useruserfollowref WHERE user2 = :user")
-    suspend fun getFollowers(user:Long): List<UserUserFollowRef>
+    fun getFollowers(user:Long): LiveData<List<UserUserFollowRef>>
 
     @Query("SELECT * FROM useruserfollowref WHERE user1 = :user")
-    suspend fun getFollowing(user:Long): List<UserUserFollowRef>
+    fun getFollowing(user:Long): LiveData<List<UserUserFollowRef>>
 
     @Insert
     suspend fun insertUserUserFollowRef(userUserFollowRef: UserUserFollowRef): Long

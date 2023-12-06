@@ -105,13 +105,14 @@ class SearchFragment : Fragment() {
         lifecycleScope.launch {
             val userFollowRefList = actualUser.userId?.let { db.userUserFollowRefDao().getFollowing(it) }
             val usersList = mutableListOf<User>()
-
+            /*
             if (userFollowRefList != null) {
                 for (userFollow in userFollowRefList) {
                     val id = userFollow.user2
                     usersList.add(db.userDao().getUserById(id))
                 }
             }
+            */
             adapter.updateUsers(null, usersList)
         }
     }

@@ -1,10 +1,10 @@
 package es.unex.giiis.asee.snapmap_ea01.view.home
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import es.unex.giiis.asee.snapmap_ea01.adapters.FollowingAdapter
@@ -76,13 +76,13 @@ class FollowingFragment : Fragment() {
     private fun loadData() {
         lifecycleScope.launch {
             val userFollowRefList = actualUser.userId?.let { db.userUserFollowRefDao().getFollowing(it) }
-
+            /*
             if (userFollowRefList != null) {
                 for (userFollow in userFollowRefList) {
                     val id = userFollow.user2
                     usersList.add(db.userDao().getUserById(id))
                 }
-            }
+            }*/
 
             adapter.updateUsers(usersList)
         }
