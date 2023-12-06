@@ -13,7 +13,7 @@ interface PhotoDao {
     suspend fun getPhoto(photoId: Long): Photo
 
     @Query("SELECT * FROM photo WHERE owner = :userId OR owner IN (SELECT user2 FROM useruserfollowref WHERE user1 = :userId)")
-    suspend fun getPhotosFromFollowedUsers(userId: Long): List<Photo>
+    fun getPhotosFromFollowedUsers(userId: Long): LiveData<List<Photo>>
 
     @Insert
     suspend fun insertPhoto(photo: Photo): Long
