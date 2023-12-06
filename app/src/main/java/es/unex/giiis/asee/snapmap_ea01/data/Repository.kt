@@ -7,7 +7,7 @@ import es.unex.giiis.asee.snapmap_ea01.database.PhotoDao
 import es.unex.giiis.asee.snapmap_ea01.database.PhotoURIDao
 import es.unex.giiis.asee.snapmap_ea01.database.UserDao
 
-class Repository private constructor(
+class Repository(
     private val userDao: UserDao,
     private val photoURIDao: PhotoURIDao,
     private val networkService: DogAPI
