@@ -8,9 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import es.unex.giiis.asee.snapmap_ea01.R
+import es.unex.giiis.asee.snapmap_ea01.data.model.User
 import es.unex.giiis.asee.snapmap_ea01.database.SnapMapDatabase
 import es.unex.giiis.asee.snapmap_ea01.databinding.FragmentProfileBinding
 import es.unex.giiis.asee.snapmap_ea01.view.LoginActivity
@@ -19,11 +21,18 @@ import kotlinx.coroutines.launch
 
 class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding  // Declara una variable de enlace
+
+    private var actualUser: User? = null
+
+    private val homeViewModel: HomeViewModel by activityViewModels()
+
     private lateinit var db: SnapMapDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         db = SnapMapDatabase.getInstance(requireContext())!!
+
+        actualUser = homeViewModel.userInSession
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,8 +46,17 @@ class ProfileFragment : Fragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        homeViewModel.user.observe(viewLifecycleOwner) { user ->
+            actualUser = user
+            setUpUI()
+        }
+    }
+
     private fun setUpUI() {
-        val user = requireActivity().intent.getSerializableExtra(HomeActivity.USER_INFO) as es.unex.giiis.asee.snapmap_ea01.data.model.User
+        val user = actualUser
         var followers : Int
         var following : Int
         if(user != null){

@@ -5,13 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import es.unex.giiis.asee.snapmap_ea01.R
 import es.unex.giiis.asee.snapmap_ea01.data.model.User
 import es.unex.giiis.asee.snapmap_ea01.databinding.ActivityHomeBinding
-import es.unex.giiis.asee.snapmap_ea01.view.LoginActivity
 
 class HomeActivity : AppCompatActivity() {
 
@@ -21,6 +21,8 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var searchFragment: SearchFragment
     private lateinit var cameraFragment: CameraFragment
     private lateinit var profileFragment: ProfileFragment
+
+    private val viewModel: HomeViewModel by viewModels()
 
     companion object {
         const val USER_INFO = "USER_INFO"
@@ -42,7 +44,7 @@ class HomeActivity : AppCompatActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val user = intent.getSerializableExtra(USER_INFO) as User
+        viewModel.userInSession = intent.getSerializableExtra(USER_INFO) as User
 
         setUpUI()
         setUpListeners()

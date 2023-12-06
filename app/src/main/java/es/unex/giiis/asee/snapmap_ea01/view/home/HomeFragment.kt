@@ -19,6 +19,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
@@ -55,6 +56,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private var _photos: List<Photo> = emptyList()
     private var _loadedPhotos: Map<Long, ImageView> = emptyMap()
 
+    private val homeViewModel: HomeViewModel by activityViewModels()
+
     //GoogleMaps variables
     private lateinit var mapView: MapView
     private var mMap: GoogleMap? = null
@@ -77,7 +80,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
         db = SnapMapDatabase.getInstance(requireContext())!!
 
-        currentUser = requireActivity().intent.getSerializableExtra(HomeActivity.USER_INFO) as User
+        currentUser = homeViewModel.user.value!!
 
         getPhotos()
 
@@ -86,6 +89,14 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         mapView.getMapAsync(this) // Configura el callback OnMapReady
 
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        homeViewModel.user.observe(viewLifecycleOwner) { user ->
+            currentUser = user
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
