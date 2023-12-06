@@ -6,9 +6,11 @@ import es.unex.giiis.asee.snapmap_ea01.data.model.User
 import es.unex.giiis.asee.snapmap_ea01.database.PhotoDao
 import es.unex.giiis.asee.snapmap_ea01.database.PhotoURIDao
 import es.unex.giiis.asee.snapmap_ea01.database.UserDao
+import es.unex.giiis.asee.snapmap_ea01.database.UserUserFollowRefDao
 
 class Repository(
     private val userDao: UserDao,
+    private val userUserFollowDao: UserUserFollowRefDao,
     private val photoURIDao: PhotoURIDao,
     private val networkService: DogAPI
 ) {
@@ -67,11 +69,12 @@ class Repository(
 
         fun getInstance(
             userDao: UserDao,
+            userUserFollowRef: UserUserFollowRefDao,
             photoURIDao: PhotoURIDao,
             photoAPI: DogAPI
         ): Repository {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: Repository(userDao, photoURIDao, photoAPI).also { INSTANCE = it }
+                INSTANCE ?: Repository(userDao, userUserFollowRef, photoURIDao, photoAPI).also { INSTANCE = it }
             }
         }
     }
