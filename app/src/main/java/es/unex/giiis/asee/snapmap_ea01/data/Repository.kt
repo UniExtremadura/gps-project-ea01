@@ -30,7 +30,6 @@ class Repository private constructor(
     private suspend fun fetchRecentPhotos() {
         try {
 
-            TODO("Ajustar codigo a la nueva API")
             val photos = networkService.getImages().map { it.toPhoto() }
             /*
                 Before inserting the photos, it is necessary to delete the previous ones, as their

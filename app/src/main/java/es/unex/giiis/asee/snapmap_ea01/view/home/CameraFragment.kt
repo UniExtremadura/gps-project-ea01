@@ -1,6 +1,7 @@
 package es.unex.giiis.asee.snapmap_ea01.view.home
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -15,10 +16,10 @@ import com.bumptech.glide.Glide
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import es.unex.giiis.asee.snapmap_ea01.R
-import es.unex.giiis.asee.snapmap_ea01.api.APIError
 import es.unex.giiis.asee.snapmap_ea01.api.getNetworkService
-import es.unex.giiis.asee.snapmap_ea01.data.api.PhotoURI
+import es.unex.giiis.asee.snapmap_ea01.data.Repository
 import es.unex.giiis.asee.snapmap_ea01.data.model.Photo
+import es.unex.giiis.asee.snapmap_ea01.data.model.PhotoURI_DB
 import es.unex.giiis.asee.snapmap_ea01.data.model.User
 import es.unex.giiis.asee.snapmap_ea01.database.SnapMapDatabase
 import es.unex.giiis.asee.snapmap_ea01.databinding.FragmentCameraBinding
@@ -26,10 +27,11 @@ import kotlinx.coroutines.launch
 
 class CameraFragment : Fragment() {
     private var photo = ""
-    private lateinit var photosURI : List<PhotoURI>
+    private lateinit var photosURI : List<PhotoURI_DB>
     private val LOCATION_PERMISSION_REQUEST_CODE = 1
     private lateinit var binding : FragmentCameraBinding
     private lateinit var db: SnapMapDatabase
+    private lateinit var repository: Repository
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,13 +41,17 @@ class CameraFragment : Fragment() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        db = SnapMapDatabase.getInstance(requireContext())!!
+        repository = Repository.getInstance(db.photoDao(), db.photoURIDao(), getNetworkService())
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-
-        db = SnapMapDatabase.getInstance(requireContext())!!
 
         getListOfPhotos()
 
@@ -56,27 +62,32 @@ class CameraFragment : Fragment() {
 
     private fun updatePhoto() {
         with(binding){
-
-            //get random photo from photosURI
-            val random = (0..photosURI.size).random()
-            photo = photosURI[random].uri.toString()
-            Glide.with(requireContext())
-                .load(photo)
-                .placeholder(R.drawable.baseline_access_time_24)
-                .into(iVDog)
+            if(!photosURI.isEmpty()) {
+                //get random photo from photosURI
+                val random = (0..photosURI.size).random()
+                photo = photosURI[random].uri.toString()
+                Glide.with(requireContext())
+                    .load(photo)
+                    .placeholder(R.drawable.baseline_access_time_24)
+                    .into(iVDog)
+            }
         }
     }
 
     private fun getListOfPhotos() {
-        lifecycleScope.launch {
-            try {
-                photosURI = fetchPhotos()
-                Log.d("MainActivity", "Photos fetched: $photosURI")
-                updatePhoto()
-            } catch (e: APIError) {
-                Log.e("MainActivity", "Error fetching photos", e)
-            }
+        subscribeUi()
+        //launchDataLoad { repository.tryUpdateRecentPhotosCache() }
+    }
+
+    private fun subscribeUi() {
+        repository.photos.observe(viewLifecycleOwner) { photos ->
+            updatePhotos(photos)
+            updatePhoto()
         }
+    }
+
+    private fun updatePhotos(photos: List<PhotoURI_DB>){
+        photosURI = photos
     }
 
     private fun setUpListeners() {
@@ -139,22 +150,18 @@ class CameraFragment : Fragment() {
             }
         }
     }
-
-    private suspend fun fetchDog(): String {
-        try {
-            return getNetworkService().getDog().uri.toString()
-        } catch (cause: Throwable) {
-            Log.e("API", "Error fetching dog", cause)
-            throw APIError("Error fetching dog", cause)
+    /*
+    private fun launchDataLoad(block: suspend () -> Unit): Job {
+        return lifecycleScope.launch {
+            try {
+                // Add a reload Cache message
+                Toast.makeText(requireContext(), "Updating cache", Toast.LENGTH_SHORT).show()
+                block()
+            } catch (error: APIError) {
+                Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
+            } finally {
+                Toast.makeText(requireContext(), "Cache updated successfully", Toast.LENGTH_SHORT).show()
+            }
         }
-    }
-
-    private suspend fun fetchPhotos(): List<PhotoURI> {
-        try {
-            return getNetworkService().getImages()
-        } catch (cause: Throwable) {
-            Log.e("API", "Error fetching photos", cause)
-            throw APIError("Error fetching photos", cause)
-        }
-    }
+    }*/
 }
