@@ -48,7 +48,7 @@ class JoinActivity : AppCompatActivity() {
         db = SnapMapDatabase.getInstance(applicationContext)!!
 
         //Repository inicialization
-        repository = Repository.getInstance(db.userDao(), db.photoURIDao(), getNetworkService())
+        repository = Repository.getInstance(db!!.userDao(), db.userUserFollowRefDao(), db.userPhotoLikeRefDao(), db.commentDao(), db.photoDao(), db.photoURIDao(),getNetworkService())
 
         setUpListeners()
     }

@@ -32,7 +32,7 @@ class LoginActivity : AppCompatActivity() {
 
         db = SnapMapDatabase.getInstance(applicationContext)!!
 
-        repository = Repository.getInstance(db.userDao(), db.photoURIDao(), getNetworkService())
+        repository = Repository.getInstance(db!!.userDao(), db.userUserFollowRefDao(), db.userPhotoLikeRefDao(), db.commentDao(), db.photoDao(), db.photoURIDao(),getNetworkService())
 
         setUpListeners()
 
