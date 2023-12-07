@@ -26,7 +26,7 @@ class CameraViewModel(
 
     val photosURI = repository.photos
 
-    private val toastMessage = MutableLiveData<String?>()
+    val toastMessage = MutableLiveData<String?>()
 
     init {
         refresh()

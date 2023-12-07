@@ -54,11 +54,13 @@ class Repository(
         try {
 
             val photos = networkService.getImages().map { it.toPhoto() }
+            photoURIDao.deletePhotos()
             photoURIDao.insertPhotos(photos)
             lastUpdateTimeMillis = System.currentTimeMillis()
 
         } catch (cause: Throwable) {
             throw APIError("Unable to fetch data from API", cause)
+            cause.printStackTrace()
         }
     }
 

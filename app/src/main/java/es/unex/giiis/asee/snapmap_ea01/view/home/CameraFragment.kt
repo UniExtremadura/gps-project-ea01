@@ -53,6 +53,12 @@ class CameraFragment : Fragment() {
             viewModel.user = user
         }
 
+        viewModel.toastMessage.observe(viewLifecycleOwner) { text ->
+            text?.let {
+                Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+            }
+        }
+
         subscribeUI()
     }
 
