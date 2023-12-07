@@ -43,6 +43,10 @@ class Repository(
             fetchRecentPhotos()
     }
 
+    suspend fun uploadPhoto(photo: Photo): Long {
+        return photoDao.insertPhoto(photo)
+    }
+
     /**
      * Fetch a new list of photos from the network, and append them to [PhotoDao]
      */
