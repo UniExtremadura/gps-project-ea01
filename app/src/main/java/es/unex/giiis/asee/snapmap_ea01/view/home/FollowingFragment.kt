@@ -5,9 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import es.unex.giiis.asee.snapmap_ea01.adapters.FollowingAdapter
+import es.unex.giiis.asee.snapmap_ea01.adapters.SearchAdapter
+import es.unex.giiis.asee.snapmap_ea01.api.getNetworkService
+import es.unex.giiis.asee.snapmap_ea01.data.Repository
 import es.unex.giiis.asee.snapmap_ea01.data.model.User
 import es.unex.giiis.asee.snapmap_ea01.data.model.UserUserFollowRef
 import es.unex.giiis.asee.snapmap_ea01.database.SnapMapDatabase
@@ -24,13 +29,12 @@ class FollowingFragment : Fragment() {
     private lateinit var adapter: FollowingAdapter
     private var _binding: FragmentFollowingBinding? = null
     private val binding get() = _binding!!
-    private lateinit var db: SnapMapDatabase
-    private val usersList = mutableListOf<User>()
-    private lateinit var actualUser: User
+
+    private val viewModel: FollowingViewModel by viewModels { FollowingViewModel.Factory }
+    private val homeViewModel: HomeViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        db = SnapMapDatabase.getInstance(requireContext())!!
     }
 
     override fun onCreateView(
@@ -39,52 +43,42 @@ class FollowingFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentFollowingBinding.inflate(inflater, container, false)
-        setUpRecyclerView()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        homeViewModel.user.observe(viewLifecycleOwner) { user ->
+            viewModel.user = user
+            setUpRecyclerView()
+            subscribeUi(adapter)
+        }
+    }
+
+    private fun setUpRecyclerView() {
+        adapter = viewModel.user?.let { FollowingAdapter(users = mutableListOf(), requireContext(), it) }!!
+
         adapter.setOnFollowButtonClickListener(object : FollowingAdapter.OnFollowButtonClickListener {
             override fun onFollowButtonClick(user: User, flag: Boolean) {
-                val actualUser = requireActivity().intent.getSerializableExtra(HomeActivity.USER_INFO) as User
-                lifecycleScope.launch {
-                    val userFollowRef = actualUser.userId?.let { UserUserFollowRef(it, user.userId!!) }
-                    if (userFollowRef != null) {
-                        if (flag)
-                            db.userUserFollowRefDao().insertUserUserFollowRef(userFollowRef)
-                        else
-                            db.userUserFollowRefDao().deleteUserFollowRef(userFollowRef)
-                    }
+                val userFollowRef = viewModel.user!!.userId?.let { UserUserFollowRef(it, user.userId!!) }
+                if (userFollowRef != null) {
+                    if (!flag)
+                        viewModel.unfollowUser(userFollowRef)
                 }
             }
         })
 
-        loadData()
-    }
-
-    private fun setUpRecyclerView() {
-        actualUser = requireActivity().intent.getSerializableExtra(HomeActivity.USER_INFO) as User
-        adapter = FollowingAdapter(users = usersList, requireContext(), actualUser)
         with(binding) {
             rVFollowing.layoutManager = LinearLayoutManager(requireContext())
             rVFollowing.adapter = adapter
         }
     }
 
-    private fun loadData() {
-        lifecycleScope.launch {
-            val userFollowRefList = actualUser.userId?.let { db.userUserFollowRefDao().getFollowing(it) }
-
-            if (userFollowRefList != null) {
-                for (userFollow in userFollowRefList) {
-                    val id = userFollow.user2
-                    usersList.add(db.userDao().getUserById(id))
-                }
-            }
-
+    private fun subscribeUi(adapter: FollowingAdapter) {
+        viewModel.following.observe(viewLifecycleOwner) { usersList ->
             adapter.updateUsers(usersList)
         }
     }
+
 }

@@ -9,21 +9,18 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import es.unex.giiis.asee.snapmap_ea01.R
-import es.unex.giiis.asee.snapmap_ea01.data.model.User
 import es.unex.giiis.asee.snapmap_ea01.database.SnapMapDatabase
 import es.unex.giiis.asee.snapmap_ea01.databinding.FragmentProfileBinding
 import es.unex.giiis.asee.snapmap_ea01.view.LoginActivity
-import kotlinx.coroutines.launch
 
 
 class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding  // Declara una variable de enlace
 
-    private var actualUser: User? = null
-
+    private val viewModel: ProfileViewModel by viewModels { ProfileViewModel.Factory }
     private val homeViewModel: HomeViewModel by activityViewModels()
 
     private lateinit var db: SnapMapDatabase
@@ -31,8 +28,6 @@ class ProfileFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         db = SnapMapDatabase.getInstance(requireContext())!!
-
-        actualUser = homeViewModel.userInSession
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,36 +35,41 @@ class ProfileFragment : Fragment() {
     ): View? {
         binding = FragmentProfileBinding.inflate(inflater, container, false)
 
-        setUpUI()
         setUpListeners()
 
         return binding.root
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         homeViewModel.user.observe(viewLifecycleOwner) { user ->
-            actualUser = user
+            viewModel.user = user
+            observeFollowersAndFollowing()
             setUpUI()
         }
     }
 
+    private fun observeFollowersAndFollowing() {
+        viewModel.followers.observe(viewLifecycleOwner) { followers ->
+            // Actualiza la UI con la lista de seguidores
+            val followersCount = followers?.size ?: 0
+            binding.tvFollowers.text = followersCount.toString()
+        }
+
+        viewModel.following.observe(viewLifecycleOwner) { following ->
+            // Actualiza la UI con la lista de usuarios que sigue
+            val followingCount = following?.size ?: 0
+            binding.tvFollowing.text = followingCount.toString()
+        }
+    }
+
     private fun setUpUI() {
-        val user = actualUser
-        var followers : Int
-        var following : Int
-        if(user != null){
-            lifecycleScope.launch {
+        if(viewModel.user != null){
 
-                followers = user.userId?.let { db.userUserFollowRefDao().getFollowers(it).size }!!
-                following = user.userId?.let { db.userUserFollowRefDao().getFollowing(it).size }!!
-
-                binding.tvFollowing.text = following.toString()
-                binding.tvFollowers.text = followers.toString()
-                binding.tvUsername.text = user.username
-                binding.tvAboutMe.text = user.aboutMe
-            }
+            binding.tvUsername.text = viewModel.user!!.username
+            binding.tvAboutMe.text = viewModel.user!!.aboutMe
         }
         else Log.d("ProfileFragment", "User is null")
     }
