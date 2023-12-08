@@ -111,21 +111,6 @@ class SearchFragment : Fragment() {
         }
     }
 
-    /*private fun loadData() {
-        lifecycleScope.launch {
-            val userFollowRefList = actualUser.userId?.let { db.userUserFollowRefDao().getFollowing(it) }
-            val usersList = mutableListOf<User>()
-
-            if (userFollowRefList != null) {
-                for (userFollow in userFollowRefList) {
-                    val id = userFollow.user2
-                    usersList.add(repository.getUserById(id))
-                }
-            }
-            adapter.updateUsers(null, usersList)
-        }
-    }*/
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
