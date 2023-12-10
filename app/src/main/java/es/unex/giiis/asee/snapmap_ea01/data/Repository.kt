@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.switchMap
 import es.unex.giiis.asee.snapmap_ea01.api.APIError
 import es.unex.giiis.asee.snapmap_ea01.api.DogAPI
+import es.unex.giiis.asee.snapmap_ea01.data.model.Comment
 import es.unex.giiis.asee.snapmap_ea01.data.model.Photo
 import es.unex.giiis.asee.snapmap_ea01.data.model.User
 import es.unex.giiis.asee.snapmap_ea01.data.model.UserPhotoLikeRef
@@ -109,6 +110,14 @@ class Repository(
     suspend fun removePhotoLike(userId: Long, photoId: Long) {
         val userPhotoLikeRef = UserPhotoLikeRef(userId, photoId)
         userPhotoLikeRefDao.deletePhotoLikeRef(userPhotoLikeRef)
+    }
+
+    suspend fun getCommentsForPhoto(photoId: Long): List<Comment> {
+        return commentDao.getCommentsForPhoto(photoId)
+    }
+
+    suspend fun insertComment(comment: Comment) {
+        commentDao.insertComment(comment)
     }
 
     companion object {

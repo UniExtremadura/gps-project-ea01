@@ -49,17 +49,17 @@ class ImageFragment : Fragment() {
             photo?.let { configureUI(it) }
         }
 
-        // Observar el LiveData del nombre del propietario para actualizar la UI
+        // Observamos el LiveData del nombre del propietario para actualizar la UI
         viewModel.ownerUsername.observe(viewLifecycleOwner) { username ->
             binding.tvAuthor.text = "from $username"
         }
 
-        // Inicializar el estado del botón de "like"
+        // Inicializamos el estado del botón de "like"
         viewModel.isLiked.observe(viewLifecycleOwner) { isLiked ->
             updateLikeButton(isLiked)
         }
 
-        // Obtener el estado actual del "like" de la base de datos
+        // Obtenemos el estado actual del "like" de la base de datos
         viewModel.isLiked(currentPhotoId, homeViewModel.user.value)
 
         setUpListeners()
