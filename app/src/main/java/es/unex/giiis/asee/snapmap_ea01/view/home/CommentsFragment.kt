@@ -17,7 +17,7 @@ import es.unex.giiis.asee.snapmap_ea01.data.model.Comment
 import es.unex.giiis.asee.snapmap_ea01.data.model.User
 import kotlinx.coroutines.launch
 
-private const val ARG_PHOTO_ID = "photoId"
+const val ARG_PHOTO_ID = "photoId"
 
 class CommentsFragment : Fragment() {
 

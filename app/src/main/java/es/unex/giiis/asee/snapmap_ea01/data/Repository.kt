@@ -7,6 +7,7 @@ import es.unex.giiis.asee.snapmap_ea01.api.APIError
 import es.unex.giiis.asee.snapmap_ea01.api.DogAPI
 import es.unex.giiis.asee.snapmap_ea01.data.model.Photo
 import es.unex.giiis.asee.snapmap_ea01.data.model.User
+import es.unex.giiis.asee.snapmap_ea01.data.model.UserPhotoLikeRef
 import es.unex.giiis.asee.snapmap_ea01.database.CommentDao
 import es.unex.giiis.asee.snapmap_ea01.database.PhotoDao
 import es.unex.giiis.asee.snapmap_ea01.database.PhotoURIDao
@@ -43,9 +44,15 @@ class Repository(
             fetchRecentPhotos()
     }
 
-    suspend fun uploadPhoto(photo: Photo): Long {
+     suspend fun uploadPhoto(photo: Photo): Long {
         return photoDao.insertPhoto(photo)
     }
+
+    suspend fun getPhotoById(photoId: Long): Photo {
+        return photoDao.getPhoto(photoId)
+    }
+
+
 
     /**
      * Fetch a new list of photos from the network, and append them to [PhotoDao]
@@ -81,12 +88,29 @@ class Repository(
         return userDao.insertUser(user)
     }
 
+    suspend fun getUserById(userId: Long): User {
+        return userDao.getUserById(userId)
+    }
     suspend fun getUserByUsername(username: String): User {
         return userDao.getUserByUsername(username)
     }
 
     suspend fun getOwnerOfPhoto(photoId: Long): String {
         return userDao.getUserById(photoId).username
+    }
+
+    suspend fun isPhotoLiked(userId: Long, photoId: Long): Boolean {
+        return userPhotoLikeRefDao.likeExists(userId, photoId) > 0
+    }
+
+    suspend fun addPhotoLike(userId: Long, photoId: Long) {
+        val userPhotoLikeRef = UserPhotoLikeRef(userId, photoId)
+        userPhotoLikeRefDao.insertUserPhotoLikeRef(userPhotoLikeRef)
+    }
+
+    suspend fun removePhotoLike(userId: Long, photoId: Long) {
+        val userPhotoLikeRef = UserPhotoLikeRef(userId, photoId)
+        userPhotoLikeRefDao.deletePhotoLikeRef(userPhotoLikeRef)
     }
 
     companion object {

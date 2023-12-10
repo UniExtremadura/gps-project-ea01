@@ -61,7 +61,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private val LOCATION_PERMISSION_REQUEST_CODE = 1
     private val ZOOM_LEVEL = 15f
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var currentUser: User
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

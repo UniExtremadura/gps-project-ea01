@@ -7,13 +7,13 @@ import es.unex.giiis.asee.snapmap_ea01.SnapMapApplication
 import es.unex.giiis.asee.snapmap_ea01.data.Repository
 import es.unex.giiis.asee.snapmap_ea01.data.model.User
 
-class HomeFragmentViewModel (
+class HomeFragmentViewModel(
     private val repository: Repository
-) : ViewModel(){
+) : ViewModel() {
     var user: User? = null
         set(value) {
             field = value
-            repository.setUserid(value!!.userId!!)
+            repository.setUserid(value?.userId ?: 0)
         }
 
     val photos = repository.photosFromFollowedUsers
