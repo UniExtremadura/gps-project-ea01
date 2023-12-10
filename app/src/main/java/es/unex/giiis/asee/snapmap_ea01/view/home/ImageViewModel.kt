@@ -4,24 +4,21 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import es.unex.giiis.asee.snapmap_ea01.SnapMapApplication
 import es.unex.giiis.asee.snapmap_ea01.data.Repository
 import es.unex.giiis.asee.snapmap_ea01.data.model.Photo
 import es.unex.giiis.asee.snapmap_ea01.data.model.User
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class ImageViewModel(
     private val repository: Repository
 ) : ViewModel() {
-
     var user: User? = null
         set(value) {
             field = value
-            repository.setUserid(value!!.userId!!)
+            repository.setUserid(value?.userId ?: 0)
         }
 
     private val _isLiked = MutableLiveData<Boolean>()
@@ -31,19 +28,14 @@ class ImageViewModel(
     private val _photoState: MutableLiveData<Photo?> = MutableLiveData()
     val photoState: LiveData<Photo?> = _photoState
 
-    var ownerUsername: String = ""
-
-    private var currentUser: User? = null
-    private var currentPhotoId: Long = -1
+    private val _ownerUsername = MutableLiveData<String>()
+    val ownerUsername: LiveData<String> = _ownerUsername
 
     fun getPhoto(photoId: Long) {
         viewModelScope.launch {
             val photo = repository.getPhotoById(photoId)
             _photoState.value = photo
 
-            // Guardamos el usuario actual y el id de la foto
-            currentUser = repository.getUserById(photo.owner ?: 0)
-          //  currentPhotoId = photo.photoId ?: -1
         }
     }
 
@@ -52,43 +44,38 @@ class ImageViewModel(
             val photo = repository.getPhotoById(photoId)
             _photoState.value = photo
 
-            // Guardamos el id del propietario
-            val ownerId = photo.owner ?: 0
-
-            // Obtenemos el nombre del usuario correspondiente al ownerId
-            ownerUsername = repository.getUserById(ownerId).username
+            photo.owner?.let { ownerId ->
+                repository.getUserById(ownerId).username.let { username ->
+                    _ownerUsername.value = username
+                }
+            }
         }
     }
 
-    fun isLiked() {
+    fun isLiked(photoId: Long, user: User?) {
         viewModelScope.launch {
-            val likeExists = repository.isPhotoLiked(
-                userId = currentUser?.userId ?: 0,
-                photoId = currentPhotoId
-            )
+            val userId = user?.userId ?: 0
+            val likeExists = repository.isPhotoLiked(userId, photoId)
             _isLiked.value = likeExists
         }
     }
 
+
     fun changeLikeStatus(photoId: Long, user: User?) {
         viewModelScope.launch {
-            _isLiked.value = _isLiked.value?.not() ?: false // Invertir el valor solo si no es nulo
+            val userId = user?.userId ?: 0
+            val isCurrentlyLiked = repository.isPhotoLiked(userId, photoId)
 
-            if (_isLiked.value == true) {
-                // Código para agregar el "like"
-                repository.addPhotoLike(
-                    userId = user?.userId ?: 0,
-                    photoId = photoId
-                )
+            if (isCurrentlyLiked) {
+                repository.removePhotoLike(userId, photoId)
+                _isLiked.value = false
             } else {
-                // Código para quitar el "like"
-                repository.removePhotoLike(
-                    userId = user?.userId ?: 0,
-                    photoId = photoId
-                )
+                repository.addPhotoLike(userId, photoId)
+                _isLiked.value = true
             }
         }
     }
+
 
     companion object {
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
@@ -98,10 +85,12 @@ class ImageViewModel(
                 extras: CreationExtras
             ): T {
                 // Get the Application object from extras
-                val application = checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
+                val application =
+                    checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
 
                 return ImageViewModel(
-                    (application as SnapMapApplication).appContainer.repository) as T
+                    (application as SnapMapApplication).appContainer.repository
+                ) as T
             }
         }
     }

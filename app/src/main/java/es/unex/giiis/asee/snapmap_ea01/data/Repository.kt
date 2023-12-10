@@ -52,8 +52,6 @@ class Repository(
         return photoDao.getPhoto(photoId)
     }
 
-
-
     /**
      * Fetch a new list of photos from the network, and append them to [PhotoDao]
      */

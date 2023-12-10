@@ -11,13 +11,11 @@ import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import es.unex.giiis.asee.snapmap_ea01.R
 import es.unex.giiis.asee.snapmap_ea01.data.model.Photo
-import es.unex.giiis.asee.snapmap_ea01.data.model.User
 import es.unex.giiis.asee.snapmap_ea01.databinding.FragmentImageBinding
 
 class ImageFragment : Fragment() {
 
     private lateinit var binding: FragmentImageBinding
-    private lateinit var currentUser: User
     private var currentPhotoId: Long = -1
 
     private val viewModel: ImageViewModel by viewModels { ImageViewModel.Factory }
@@ -29,10 +27,44 @@ class ImageFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentImageBinding.inflate(inflater, container, false)
-        currentUser = homeViewModel.getCurrentUser()!!
-        setUpListeners()
+        val args = ImageFragmentArgs.fromBundle(requireArguments())
+        currentPhotoId = args.photoId
         return binding.root
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        homeViewModel.user.observe(viewLifecycleOwner) { user ->
+            viewModel.user = user
+        }
+
+        // Obtenemos la foto que queremos ver en la UI
+        viewModel.getPhoto(currentPhotoId)
+
+        // Obtenemos el nombre del propietario de la foto
+        viewModel.getOwnerPhoto(currentPhotoId)
+
+        viewModel.photoState.observe(viewLifecycleOwner) { photo ->
+            photo?.let { configureUI(it) }
+        }
+
+        // Observar el LiveData del nombre del propietario para actualizar la UI
+        viewModel.ownerUsername.observe(viewLifecycleOwner) { username ->
+            binding.tvAuthor.text = "from $username"
+        }
+
+        // Inicializar el estado del botón de "like"
+        viewModel.isLiked.observe(viewLifecycleOwner) { isLiked ->
+            updateLikeButton(isLiked)
+        }
+
+        // Obtener el estado actual del "like" de la base de datos
+        viewModel.isLiked(currentPhotoId, homeViewModel.user.value)
+
+        setUpListeners()
+    }
+
 
     private fun configureUI(photo: Photo) {
         with(binding) {
@@ -40,42 +72,13 @@ class ImageFragment : Fragment() {
                 .load(photo.photoURL)
                 .placeholder(R.drawable.baseline_access_time_24)
                 .into(ivImage)
-
-            viewModel.getOwnerPhoto(currentPhotoId)
-
-            tvAuthor.text = "from ${viewModel.ownerUsername}"
-
-            viewModel.isLiked.observe(viewLifecycleOwner) { isLiked ->
-                // Actualizar la interfaz de usuario según el estado de "like"
-                if (photo != null) {
-                    val likeColor = if (isLiked) R.color.like else R.color.white
-                    val newColor = ContextCompat.getColor(requireContext(), likeColor)
-                    ivLike.setColorFilter(newColor)
-                }
-            }
-        }
-    }
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        currentUser = homeViewModel.getCurrentUser()!!
-        if (currentUser != null) {
-            viewModel.user = currentUser
-
-            val args = ImageFragmentArgs.fromBundle(requireArguments())
-            currentPhotoId = args.photoId
-            viewModel.getPhoto(currentPhotoId)
-
-            viewModel.photoState.observe(viewLifecycleOwner) { photo ->
-                photo?.let { configureUI(it) }
-            }
         }
     }
 
     private fun setUpListeners() {
         with(binding) {
             ivLike.setOnClickListener {
-                viewModel.changeLikeStatus(currentPhotoId, homeViewModel.getCurrentUser())
+                    viewModel.changeLikeStatus(currentPhotoId, viewModel.user)
             }
 
             ivComment.setOnClickListener {
@@ -86,6 +89,12 @@ class ImageFragment : Fragment() {
                     .commit()
             }
         }
+    }
+
+    private fun updateLikeButton(isLiked: Boolean) {
+        val likeColor = if (isLiked) R.color.like else R.color.white
+        val newColor = ContextCompat.getColor(requireContext(), likeColor)
+        binding.ivLike.setColorFilter(newColor)
     }
 
     companion object {

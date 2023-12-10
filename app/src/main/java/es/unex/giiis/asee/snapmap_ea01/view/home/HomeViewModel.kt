@@ -15,9 +15,4 @@ class HomeViewModel: ViewModel() {
             field = value
             _user.value = value!!
         }
-
-    fun getCurrentUser(): User? {
-        return _user.value
-    }
-
 }
