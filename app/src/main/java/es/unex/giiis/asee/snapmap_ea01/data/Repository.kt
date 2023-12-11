@@ -78,11 +78,13 @@ class Repository(
         return userDao.insertUser(user)
     }
 
+    suspend fun updateUser(user: User) {
+        userDao.updateUser(user)
+    }
+
     suspend fun getUserByUsername(username: String): User {
         return userDao.getUserByUsername(username)
     }
-
-
 
     companion object {
         private const val MIN_TIME_FROM_LAST_FETCH_MILLIS: Long = 3000

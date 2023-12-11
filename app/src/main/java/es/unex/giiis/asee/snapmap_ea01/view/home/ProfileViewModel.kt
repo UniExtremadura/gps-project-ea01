@@ -2,10 +2,12 @@ package es.unex.giiis.asee.snapmap_ea01.view.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import es.unex.giiis.asee.snapmap_ea01.SnapMapApplication
 import es.unex.giiis.asee.snapmap_ea01.data.Repository
 import es.unex.giiis.asee.snapmap_ea01.data.model.User
+import kotlinx.coroutines.launch
 
 class ProfileViewModel (
     private val repository: Repository
@@ -18,6 +20,12 @@ class ProfileViewModel (
             field = value
             repository.setUserid(value!!.userId!!)
         }
+
+    fun saveUser(user: User) {
+        viewModelScope.launch {
+            repository.updateUser(user)
+        }
+    }
     companion object {
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
