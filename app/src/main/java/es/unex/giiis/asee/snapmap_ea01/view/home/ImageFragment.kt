@@ -16,12 +16,14 @@ import es.unex.giiis.asee.snapmap_ea01.databinding.FragmentImageBinding
 class ImageFragment : Fragment() {
 
     private lateinit var binding: FragmentImageBinding
-    private var currentPhotoId: Long = -1
+    private var currentPhotoId: Long = -1 // variable que va a ser usada para saber el ID de la foto actual
 
+    // ViewModel para la lógica relacionada con las imágenes
     private val viewModel: ImageViewModel by viewModels { ImageViewModel.Factory }
+    // ViewModel para la lógica relacionada con la pantalla principal. Se va a usar para recuperar al usuario actual
     private val homeViewModel: HomeViewModel by activityViewModels()
 
-
+    // Infla la vista del fragmento y obtiene el ID de la foto de los argumentos
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -32,40 +34,42 @@ class ImageFragment : Fragment() {
         return binding.root
     }
 
+    // Configuración de la vista una vez que se ha creado
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Observa el usuario actual desde el ViewModel de la pantalla principal
         homeViewModel.user.observe(viewLifecycleOwner) { user ->
             viewModel.user = user
         }
 
-        // Obtenemos la foto que queremos ver en la UI
+        // Obtiene la foto y su información para mostrar en la UI
         viewModel.getPhoto(currentPhotoId)
-
-        // Obtenemos el nombre del propietario de la foto
         viewModel.getOwnerPhoto(currentPhotoId)
 
+        // Observa el estado de la foto para actualizar la UI cuando cambie
         viewModel.photoState.observe(viewLifecycleOwner) { photo ->
             photo?.let { configureUI(it) }
         }
 
-        // Observamos el LiveData del nombre del propietario para actualizar la UI
+        // Observa el nombre del propietario de la foto para actualizar la UI
         viewModel.ownerUsername.observe(viewLifecycleOwner) { username ->
             binding.tvAuthor.text = "from $username"
         }
 
-        // Inicializamos el estado del botón de "like"
+        // Inicializa y observa el estado del botón de "me gusta"
         viewModel.isLiked.observe(viewLifecycleOwner) { isLiked ->
             updateLikeButton(isLiked)
         }
 
-        // Obtenemos el estado actual del "like" de la base de datos
+        // Obtiene el estado actual del "me gusta" de la base de datos
         viewModel.isLiked(currentPhotoId, homeViewModel.user.value)
 
+        // Configura los listeners para los botones de "me gusta" y comentarios
         setUpListeners()
     }
 
-
+    // Configura la UI con la información de la foto
     private fun configureUI(photo: Photo) {
         with(binding) {
             Glide.with(requireContext())
@@ -75,13 +79,17 @@ class ImageFragment : Fragment() {
         }
     }
 
+    // Configura los listeners para los botones
     private fun setUpListeners() {
         with(binding) {
+            // Listener para el botón de "me gusta"
             ivLike.setOnClickListener {
-                    viewModel.changeLikeStatus(currentPhotoId, viewModel.user)
+                viewModel.changeLikeStatus(currentPhotoId, viewModel.user)
             }
 
+            // Listener para el botón de comentarios
             ivComment.setOnClickListener {
+                // Navega al fragmento de comentarios si pulsamos sobre dicho botón
                 val commentsFragment = CommentsFragment.newInstance(currentPhotoId)
                 requireActivity().supportFragmentManager.beginTransaction()
                     .replace(R.id.nav_host_fragment, commentsFragment)
@@ -91,6 +99,7 @@ class ImageFragment : Fragment() {
         }
     }
 
+    // Actualiza el color del botón de "me gusta" según si la foto está marcada como "me gusta" o no
     private fun updateLikeButton(isLiked: Boolean) {
         val likeColor = if (isLiked) R.color.like else R.color.white
         val newColor = ContextCompat.getColor(requireContext(), likeColor)

@@ -1,7 +1,5 @@
 package es.unex.giiis.asee.snapmap_ea01.view.home
 
-import android.database.sqlite.SQLiteConstraintException
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -22,45 +20,33 @@ class CommentsViewModel(
     var user: User? = null
         set(value) {
             field = value
-            repository.setUserid(value?.userId ?: 0)
+            repository.setUserid(value?.userId ?: 0)  // Actualizamos el userId en el repositorio
         }
 
+    // LiveData que contiene la lista de comentarios con información del usuario
     private val _commentsWithUser = MutableLiveData<List<CommentWithUser>>()
     val commentsWithUser: LiveData<List<CommentWithUser>>
         get() = _commentsWithUser
 
+    // Función para añadir un comentario a la foto
     fun addComment(photoId: Long, userId: Long, commentText: String) {
         viewModelScope.launch {
-            try {
-                Log.d("CommentsViewModel", "Intentando agregar comentario")
-                val newComment = Comment(author = userId, photo = photoId, comment = commentText)
-                repository.insertComment(newComment)
-                Log.d("CommentsViewModel", "Comentario agregado, actualizando lista de comentarios")
-                getCommentsForPhoto(photoId) // Actualizamos la lista de comentarios
-            } catch (e: SQLiteConstraintException) {
-                Log.e("CommentsViewModel", "Error de restricción de clave foránea: ${e.message}")
-                // Aquí puedes agregar lógica adicional para manejar este error específico
-            } catch (e: Exception) {
-                Log.e("CommentsViewModel", "Error al agregar comentario: ${e.message}")
-            }
+            val newComment = Comment(author = userId, photo = photoId, comment = commentText)
+            repository.insertComment(newComment)  // Insertamos el nuevo comentario en la base de datos
+            getCommentsForPhoto(photoId)  // Actualizamos la lista de comentarios
         }
     }
 
+    // Función para obtener los comentarios de una foto
     fun getCommentsForPhoto(photoId: Long) {
         viewModelScope.launch {
-            try {
-                Log.d("CommentsViewModel", "Obteniendo comentarios para la foto con ID: $photoId")
-                val commentsList = repository.getCommentsForPhoto(photoId)
-                val commentsWithUserList = commentsList.mapNotNull { comment ->
-                    comment.author?.let { authorId ->
-                        CommentWithUser(comment, repository.getUserById(authorId))
-                    }
+            val commentsList = repository.getCommentsForPhoto(photoId)  // Obtenemos los comentarios de la foto de la base de datos
+            val commentsWithUserList = commentsList.mapNotNull { comment ->
+                comment.author?.let { authorId ->
+                    CommentWithUser(comment, repository.getUserById(authorId))  // Creamos un objeto CommentWithUser para cada comentario
                 }
-                Log.d("CommentsViewModel", "Comentarios obtenidos: ${commentsWithUserList.size}")
-                _commentsWithUser.value = commentsWithUserList
-            } catch (e: Exception) {
-                Log.e("CommentsViewModel", "Error al obtener comentarios: ${e.message}")
             }
+            _commentsWithUser.value = commentsWithUserList  // Actualizamos el LiveData con la nueva lista de comentarios
         }
     }
 
@@ -71,10 +57,8 @@ class CommentsViewModel(
                 modelClass: Class<T>,
                 extras: CreationExtras
             ): T {
-                // Get the Application object from extras
                 val application =
                     checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
-
                 return CommentsViewModel(
                     (application as SnapMapApplication).appContainer.repository
                 ) as T
