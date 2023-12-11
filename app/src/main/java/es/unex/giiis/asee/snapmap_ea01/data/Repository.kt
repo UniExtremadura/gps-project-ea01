@@ -9,6 +9,7 @@ import es.unex.giiis.asee.snapmap_ea01.data.model.Comment
 import es.unex.giiis.asee.snapmap_ea01.data.model.Photo
 import es.unex.giiis.asee.snapmap_ea01.data.model.User
 import es.unex.giiis.asee.snapmap_ea01.data.model.UserPhotoLikeRef
+import es.unex.giiis.asee.snapmap_ea01.data.model.UserUserFollowRef
 import es.unex.giiis.asee.snapmap_ea01.database.CommentDao
 import es.unex.giiis.asee.snapmap_ea01.database.PhotoDao
 import es.unex.giiis.asee.snapmap_ea01.database.PhotoURIDao
@@ -79,10 +80,6 @@ class Repository(
         return timeFromLastFetch > MIN_TIME_FROM_LAST_FETCH_MILLIS || photoURIDao.getNumberOfPhotos() == 0L
     }
 
-    fun setUserid(userid: Long) {
-        userFilter.value = userid
-    }
-
     suspend fun insertUser(user: User): Long {
         return userDao.insertUser(user)
     }
@@ -118,6 +115,28 @@ class Repository(
 
     suspend fun insertComment(comment: Comment) {
         commentDao.insertComment(comment)
+    }
+
+    suspend fun getUsers() : List<User> {
+        return userDao.getUsers()
+    }
+
+    val followers: LiveData<List<User>> =
+        userFilter.switchMap{ userid -> userUserFollowRefDao.getUserFollowers(userid) }
+
+    val following: LiveData<List<User>> =
+        userFilter.switchMap{ userid -> userUserFollowRefDao.getUserFollowing(userid) }
+
+    fun setUserid(userid:Long){
+        userFilter.value = userid
+    }
+
+    suspend fun insertUserUserFollowRef(userUserFollowRef: UserUserFollowRef) : Long {
+        return userUserFollowRefDao.insertUserUserFollowRef(userUserFollowRef)
+    }
+
+    suspend fun deleteUserFollowRef(userUserFollowRef: UserUserFollowRef) {
+        userUserFollowRefDao.deleteUserFollowRef(userUserFollowRef)
     }
 
     companion object {
