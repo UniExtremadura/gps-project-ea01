@@ -3,6 +3,8 @@ package es.unex.giiis.asee.snapmap_ea01.view.home
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.preference.EditTextPreference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
@@ -10,16 +12,14 @@ import es.unex.giiis.asee.snapmap_ea01.R
 
 class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
 
+    private val viewModel: SettingsViewModel by viewModels()
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences, rootKey)
 
-        // Obtener referencias a las preferencias
         val darkModeSwitch: SwitchPreference? = findPreference("darkmode")
-        val usernamePreference: EditTextPreference? = findPreference("username")
-        val passwordPreference: EditTextPreference? = findPreference("password")
         val rememberMeSwitch: SwitchPreference? = findPreference("rememberme")
 
-        // Establecer el estado inicial del switch después de configurar el listener
         val systemDefaultMode = when (AppCompatDelegate.getDefaultNightMode()) {
             AppCompatDelegate.MODE_NIGHT_YES -> true
             else -> false
@@ -28,19 +28,25 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
         darkModeSwitch?.setOnPreferenceChangeListener { _, newValue ->
             val isDarkModeEnabled = newValue as Boolean
-            if (isDarkModeEnabled) {
-                // Habilitar el modo noche
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            } else {
-                // Habilitar el modo día
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
-
-            // Recrear la actividad para aplicar el cambio de tema
-            activity?.recreate()
-
+            viewModel.updateDarkMode(isDarkModeEnabled)
+            applyTheme(isDarkModeEnabled)
             true
         }
+
+        rememberMeSwitch?.setOnPreferenceChangeListener { _, newValue ->
+            val rememberMeEnabled = newValue as Boolean
+            viewModel.updateRememberMe(rememberMeEnabled)
+            true
+        }
+
+        // Observar los cambios en el ViewModel
+        viewModel.username.observe(this, Observer { username ->
+            findPreference<EditTextPreference>("username")?.summary = username
+        })
+
+        viewModel.password.observe(this, Observer { password ->
+            findPreference<EditTextPreference>("password")?.summary = password
+        })
 
         // Obtener los valores guardados en SharedPreferences y establecerlos en los EditTextPreference
         updateUsernameAndPassword(rememberMeSwitch?.isChecked)
@@ -62,22 +68,24 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         }
     }
 
-    private fun updateUsernameAndPassword(rememberMeEnabled: Boolean?) {
-        val usernamePreference: EditTextPreference? = findPreference("username")
-        val passwordPreference: EditTextPreference? = findPreference("password")
+    private fun applyTheme(isDarkModeEnabled: Boolean) {
+        if (isDarkModeEnabled) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
+        activity?.recreate()
+    }
 
+    private fun updateUsernameAndPassword(rememberMeEnabled: Boolean?) {
         if (rememberMeEnabled == true) {
-            // Obtener los valores guardados en SharedPreferences y establecerlos en los EditTextPreference
             val sharedPreferences = preferenceManager.sharedPreferences
             val savedUsername = sharedPreferences?.getString("username", "Default username")
             val savedPassword = sharedPreferences?.getString("password", "Default password")
 
-            usernamePreference?.summary = savedUsername
-            passwordPreference?.summary = savedPassword
+            viewModel.updateUsernameAndPassword(savedUsername ?: "", savedPassword ?: "")
         } else {
-            // Mostrar valores por defecto si "rememberme" no está activo
-            usernamePreference?.summary = "Default username"
-            passwordPreference?.summary = "Default password"
+            viewModel.updateUsernameAndPassword("Default username", "Default password")
         }
     }
 }
