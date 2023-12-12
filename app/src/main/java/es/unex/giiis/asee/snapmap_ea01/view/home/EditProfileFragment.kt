@@ -19,9 +19,11 @@ import es.unex.giiis.asee.snapmap_ea01.utils.CredentialCheck
 class EditProfileFragment : Fragment() {
 
     private lateinit var binding: FragmentEditProfileBinding
-    private val viewModel: ProfileViewModel by viewModels{ProfileViewModel.Factory}
     private lateinit var navController : NavController
     private val USER_INFO = "USER_INFO"
+
+    private val homeViewModel: HomeViewModel by activityViewModels()
+    private val viewModel: EditProfileViewModel by viewModels { EditProfileViewModel.Factory }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,12 +33,20 @@ class EditProfileFragment : Fragment() {
 
         navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
 
-        setUpUI()
-
         setUpListeners()
 
         return binding.root
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        homeViewModel.user.observe(viewLifecycleOwner) { user ->
+            viewModel.user = user
+            setUpUI()
+        }
+    }
+
     private fun setUpUI(){
 
         if(viewModel.user != null){
