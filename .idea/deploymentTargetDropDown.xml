@@ -5,6 +5,12 @@
       <entry key="Android">
         <State />
       </entry>
+      <entry key="DarkModeTest">
+        <State />
+      </entry>
+      <entry key="LoginTest">
+        <State />
+      </entry>
       <entry key="LogoutTest">
         <State />
       </entry>

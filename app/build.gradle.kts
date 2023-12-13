@@ -45,6 +45,7 @@ android {
 
 dependencies {
 
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.6.0-alpha02")
     val core_version = "1.12.0"
 
     // Java language implementation
@@ -97,7 +98,6 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11")
 
-    implementation("com.github.bumptech.glide:glide:5.0.0-rc01")
 
     // Kotlin
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
@@ -110,8 +110,8 @@ dependencies {
     // Para usar picasso
     implementation ("com.squareup.picasso:picasso:2.8")
 
-    //Para usar gridle
-    implementation ("com.github.bumptech.glide:glide:4.12.0")
+    //Para usar glide
+    implementation("com.github.bumptech.glide:glide:5.0.0-rc01")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
 
     // Feature module Support
@@ -134,9 +134,9 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.test.ext:junit:1.2.0-alpha02")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.0-alpha02")
     androidTestImplementation("androidx.test:runner:1.5.1")
-    androidTestImplementation("androidx.test:rules:1.5.0")
+    androidTestImplementation("androidx.test:rules:1.6.0-alpha02")
     debugImplementation("androidx.tracing:tracing:1.1.0")
 }
