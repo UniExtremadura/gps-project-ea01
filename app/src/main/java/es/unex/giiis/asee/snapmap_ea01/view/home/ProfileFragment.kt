@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
+import androidx.preference.PreferenceManager
 import es.unex.giiis.asee.snapmap_ea01.R
 import es.unex.giiis.asee.snapmap_ea01.databinding.FragmentProfileBinding
 import es.unex.giiis.asee.snapmap_ea01.view.LoginActivity
@@ -71,6 +72,21 @@ class ProfileFragment : Fragment() {
         else Log.d("ProfileFragment", "User is null")
     }
 
+    private fun clearUserCredentials() {
+        val preferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val editor = preferences.edit()
+        editor.remove("username")
+        editor.remove("password")
+        editor.apply()
+    }
+
+    private fun saveLoginState(isLoggedIn: Boolean) {
+        val preferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val editor = preferences.edit()
+        editor.putBoolean("isLoggedIn", isLoggedIn)
+        editor.apply()
+    }
+
     private fun setUpListeners(){
         with(binding){
             btnEditProfile.setOnClickListener {
@@ -78,8 +94,16 @@ class ProfileFragment : Fragment() {
                 navController.navigate(R.id.action_profileFragment_to_editProfileFragment)
             }
             btnLogout.setOnClickListener{
+                // Eliminar las credenciales almacenadas y cambiar el estado de inicio de sesión
+                clearUserCredentials()
+                saveLoginState(false)
+
+                // Redirigir al usuario a la pantalla de inicio de sesión
                 val intent = Intent(requireContext(), LoginActivity::class.java)
                 startActivity(intent)
+
+                // Cierra la actividad actual (ProfileFragment)
+                requireActivity().finish()
             }
             btnFollowers.setOnClickListener {
                 val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
