@@ -21,14 +21,14 @@ import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class LogoutTest {
+class LoginTest {
 
     @Rule
     @JvmField
     var mActivityScenarioRule = ActivityScenarioRule(LoginActivity::class.java)
 
     @Test
-    fun logoutTest() {
+    fun loginTest() {
         val appCompatEditText = onView(
             allOf(
                 withId(R.id.etUsername),
@@ -42,7 +42,9 @@ class LogoutTest {
                 isDisplayed()
             )
         )
-        appCompatEditText.perform(replaceText("Fernando"), closeSoftKeyboard())
+
+        Thread.sleep(2000)
+        appCompatEditText.perform(replaceText("Daniel"), closeSoftKeyboard())
 
         val appCompatEditText2 = onView(
             allOf(
@@ -57,7 +59,9 @@ class LogoutTest {
                 isDisplayed()
             )
         )
-        appCompatEditText2.perform(replaceText("qwerty"), closeSoftKeyboard())
+
+        Thread.sleep(2000)
+        appCompatEditText2.perform(replaceText("12345"), closeSoftKeyboard())
 
         val materialButton = onView(
             allOf(
@@ -92,23 +96,6 @@ class LogoutTest {
 
         Thread.sleep(2000)
         bottomNavigationItemView.perform(click())
-
-        val materialButton2 = onView(
-            allOf(
-                withId(R.id.btnLogout), withText("Logout"),
-                childAtPosition(
-                    childAtPosition(
-                        withId(R.id.nav_host_fragment),
-                        0
-                    ),
-                    5
-                ),
-                isDisplayed()
-            )
-        )
-
-        Thread.sleep(2000)
-        materialButton2.perform(click())
     }
 
     private fun childAtPosition(
