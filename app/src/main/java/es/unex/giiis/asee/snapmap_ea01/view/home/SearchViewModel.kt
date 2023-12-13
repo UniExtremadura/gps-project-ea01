@@ -16,7 +16,7 @@ class SearchViewModel (
     private val repository: Repository
 ) : ViewModel(){
 
-    val following = repository.following
+    val following = repository.userFollowing
     private var users = mutableListOf<User>()
     var user: User? = null
         set(value) {

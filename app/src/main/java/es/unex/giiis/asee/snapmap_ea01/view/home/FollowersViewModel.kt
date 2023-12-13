@@ -15,8 +15,8 @@ class FollowersViewModel (
     private val repository: Repository
 ) : ViewModel(){
 
-    val following = repository.following
-    val followers = repository.followers
+    val following = repository.userFollowing
+    val followers = repository.userFollowers
 
     var user: User? = null
         set(value) {

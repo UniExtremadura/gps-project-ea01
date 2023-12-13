@@ -38,8 +38,6 @@ class Repository(
     val following: LiveData<List<UserUserFollowRef>> =
         userFilter.switchMap{ userid -> userUserFollowRefDao.getFollowing(userid) }
 
-    private val userFilter = MutableLiveData<Long>()
-
     val photosFromFollowedUsers: LiveData<List<Photo>> =
         userFilter.switchMap{ userid -> photoDao.getPhotosFromFollowedUsers(userid) }
 
@@ -137,10 +135,10 @@ class Repository(
         return userDao.getUsers()
     }
 
-    val followers: LiveData<List<User>> =
+    val userFollowers: LiveData<List<User>> =
         userFilter.switchMap{ userid -> userUserFollowRefDao.getUserFollowers(userid) }
 
-    val following: LiveData<List<User>> =
+    val userFollowing: LiveData<List<User>> =
         userFilter.switchMap{ userid -> userUserFollowRefDao.getUserFollowing(userid) }
 
     suspend fun insertUserUserFollowRef(userUserFollowRef: UserUserFollowRef) : Long {
