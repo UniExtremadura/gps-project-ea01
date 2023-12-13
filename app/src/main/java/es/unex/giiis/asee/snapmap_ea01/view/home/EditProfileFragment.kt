@@ -49,12 +49,13 @@ class EditProfileFragment : Fragment() {
 
     private fun setUpUI(){
 
-        if(viewModel.user != null){
+        if(homeViewModel.user != null){
 
-            binding.etUsername.setText(viewModel.user!!.username)
-            binding.etAboutMe.setText(viewModel.user!!.aboutMe)
-            binding.etEmail.setText(viewModel.user!!.email)
-            binding.etPassword.setText(viewModel.user!!.password)
+            binding.etUsername.setText(homeViewModel.user.value!!.username)
+            binding.etAboutMe.setText(homeViewModel.user.value!!.aboutMe)
+            binding.etEmail.setText(homeViewModel.user.value!!.email)
+            binding.etPassword.setText(homeViewModel.user.value!!.password)
+
 
         }
         else Log.d("EditProfileFragment", "User is null")
@@ -92,6 +93,7 @@ class EditProfileFragment : Fragment() {
                     )
 
                     viewModel.saveUser(user)
+                    homeViewModel.user.value = user
 
                     Toast.makeText(requireContext(), "Datos actualizados con éxito", Toast.LENGTH_SHORT).show()
 
