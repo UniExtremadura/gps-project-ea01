@@ -32,6 +32,14 @@ class Repository(
 
     private val userFilter = MutableLiveData<Long>()
 
+    val followers: LiveData<List<UserUserFollowRef>> =
+        userFilter.switchMap{ userid -> userUserFollowRefDao.getFollowers(userid) }
+
+    val following: LiveData<List<UserUserFollowRef>> =
+        userFilter.switchMap{ userid -> userUserFollowRefDao.getFollowing(userid) }
+
+    private val userFilter = MutableLiveData<Long>()
+
     val photosFromFollowedUsers: LiveData<List<Photo>> =
         userFilter.switchMap{ userid -> photoDao.getPhotosFromFollowedUsers(userid) }
 
@@ -80,6 +88,10 @@ class Repository(
         return timeFromLastFetch > MIN_TIME_FROM_LAST_FETCH_MILLIS || photoURIDao.getNumberOfPhotos() == 0L
     }
 
+    fun setUserid(userid: Long) {
+        userFilter.value = userid
+    }
+
     suspend fun insertUser(user: User): Long {
         return userDao.insertUser(user)
     }
@@ -87,6 +99,10 @@ class Repository(
     suspend fun getUserById(userId: Long): User {
         return userDao.getUserById(userId)
     }
+    suspend fun updateUser(user: User) {
+        userDao.updateUser(user)
+    }
+
     suspend fun getUserByUsername(username: String): User {
         return userDao.getUserByUsername(username)
     }
@@ -126,10 +142,6 @@ class Repository(
 
     val following: LiveData<List<User>> =
         userFilter.switchMap{ userid -> userUserFollowRefDao.getUserFollowing(userid) }
-
-    fun setUserid(userid:Long){
-        userFilter.value = userid
-    }
 
     suspend fun insertUserUserFollowRef(userUserFollowRef: UserUserFollowRef) : Long {
         return userUserFollowRefDao.insertUserUserFollowRef(userUserFollowRef)
