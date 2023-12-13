@@ -6,13 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import es.unex.giiis.asee.snapmap_ea01.adapters.SearchAdapter
-import es.unex.giiis.asee.snapmap_ea01.api.getNetworkService
-import es.unex.giiis.asee.snapmap_ea01.data.Repository
 import es.unex.giiis.asee.snapmap_ea01.data.model.User
 import es.unex.giiis.asee.snapmap_ea01.data.model.UserUserFollowRef
 import es.unex.giiis.asee.snapmap_ea01.database.SnapMapDatabase
@@ -29,11 +25,13 @@ class SearchFragment : Fragment() {
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: SearchAdapter
-    private val viewModel: SearchViewModel by viewModels { SearchViewModel.Factory }
-    private val homeViewModel: HomeViewModel by activityViewModels()
+    private var filteredUsers = mutableListOf<User>()
+    private lateinit var actualUser : User
+    private lateinit var db: SnapMapDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        db = SnapMapDatabase.getInstance(requireContext())!!
     }
 
     override fun onCreateView(
@@ -42,22 +40,13 @@ class SearchFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
-
+        setUpRecyclerView()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        homeViewModel.user.observe(viewLifecycleOwner) { user ->
-            viewModel.user = user
-            setUpRecyclerView()
-            setUpListeners()
-            subscribeUi(adapter)
-        }
-    }
-
-    private fun setUpListeners(){
         binding.etSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
@@ -66,48 +55,65 @@ class SearchFragment : Fragment() {
             override fun onQueryTextChange(newText: String?): Boolean {
                 filterUsers(newText.orEmpty())
                 return true
+
             }
         })
-    }
-
-    private fun subscribeUi(adapter: SearchAdapter) {
-        viewModel.following.observe(viewLifecycleOwner) { usersList ->
-            adapter.updateUsers(null, usersList)
-        }
-    }
-
-    private fun filterUsers(query: String) {
-        val filteredUsers = if (query.isNotEmpty()) {
-                                viewModel.getUsers().filter { it.username.contains(query, ignoreCase = true) }
-                            } else {
-                                emptyList()
-                            }
-        adapter.updateUsers(filteredUsers.toMutableList(), null)
-    }
-
-    private fun setUpRecyclerView() {
-        adapter = viewModel.user?.let {
-            SearchAdapter(users = mutableListOf(), requireContext(), mutableListOf(),
-                it
-            )
-
-        }!!
 
         adapter.setOnFollowButtonClickListener(object : SearchAdapter.OnFollowButtonClickListener {
             override fun onFollowButtonClick(user: User, flag: Boolean) {
-                val userFollowRef = viewModel.user?.userId?.let { UserUserFollowRef(it, user.userId!!) }
-                if (userFollowRef != null) {
-                    if (flag)
-                        viewModel.followUser(userFollowRef)
-                    else
-                        viewModel.unfollowUser(userFollowRef)
+                val actualUser = requireActivity().intent.getSerializableExtra(HomeActivity.USER_INFO) as User
+                lifecycleScope.launch {
+                    val userFollowRef = actualUser.userId?.let { UserUserFollowRef(it, user.userId!!) }
+                    if (userFollowRef != null) {
+                        if (flag)
+                            db.userUserFollowRefDao().insertUserUserFollowRef(userFollowRef)
+                        else
+                            db.userUserFollowRefDao().deleteUserFollowRef(userFollowRef)
+                    }
                 }
             }
         })
 
+        loadData()
+
+    }
+
+    private fun filterUsers(query: String) {
+        filteredUsers.clear()
+        if (query.isNotEmpty()) {
+            lifecycleScope.launch {
+                for (user in db.userDao().getUsers()) {
+                    if (user.username.contains(query, ignoreCase = true)) {
+                        filteredUsers.add(user)
+                    }
+                }
+            }
+        }
+        adapter.updateUsers(filteredUsers, null)
+    }
+
+    private fun setUpRecyclerView() {
+        actualUser = requireActivity().intent.getSerializableExtra(HomeActivity.USER_INFO) as User
+        adapter = SearchAdapter(users = mutableListOf(), requireContext(), mutableListOf(), actualUser)
         with(binding) {
             rVSearch.layoutManager = LinearLayoutManager(requireContext())
             rVSearch.adapter = adapter
+        }
+    }
+
+    private fun loadData() {
+        lifecycleScope.launch {
+            val userFollowRefList = actualUser.userId?.let { db.userUserFollowRefDao().getFollowing(it) }
+            val usersList = mutableListOf<User>()
+            /*
+            if (userFollowRefList != null) {
+                for (userFollow in userFollowRefList) {
+                    val id = userFollow.user2
+                    usersList.add(db.userDao().getUserById(id))
+                }
+            }
+            */
+            adapter.updateUsers(null, usersList)
         }
     }
 

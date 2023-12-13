@@ -13,7 +13,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import androidx.preference.PreferenceManager
 import es.unex.giiis.asee.snapmap_ea01.R
-import es.unex.giiis.asee.snapmap_ea01.database.SnapMapDatabase
 import es.unex.giiis.asee.snapmap_ea01.databinding.FragmentProfileBinding
 import es.unex.giiis.asee.snapmap_ea01.view.LoginActivity
 
@@ -24,11 +23,9 @@ class ProfileFragment : Fragment() {
     private val viewModel: ProfileViewModel by viewModels { ProfileViewModel.Factory }
     private val homeViewModel: HomeViewModel by activityViewModels()
 
-    private lateinit var db: SnapMapDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        db = SnapMapDatabase.getInstance(requireContext())!!
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -69,8 +66,8 @@ class ProfileFragment : Fragment() {
     private fun setUpUI() {
         if(viewModel.user != null){
 
-            binding.tvUsername.text = viewModel.user!!.username
-            binding.tvAboutMe.text = viewModel.user!!.aboutMe
+                binding.tvUsername.text = viewModel.user!!.username
+                binding.tvAboutMe.text = viewModel.user!!.aboutMe
         }
         else Log.d("ProfileFragment", "User is null")
     }
@@ -90,14 +87,13 @@ class ProfileFragment : Fragment() {
         editor.apply()
     }
 
-
     private fun setUpListeners(){
         with(binding){
             btnEditProfile.setOnClickListener {
                 val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
                 navController.navigate(R.id.action_profileFragment_to_editProfileFragment)
             }
-            btnLogout.setOnClickListener {
+            btnLogout.setOnClickListener{
                 // Eliminar las credenciales almacenadas y cambiar el estado de inicio de sesión
                 clearUserCredentials()
                 saveLoginState(false)
@@ -109,7 +105,6 @@ class ProfileFragment : Fragment() {
                 // Cierra la actividad actual (ProfileFragment)
                 requireActivity().finish()
             }
-
             btnFollowers.setOnClickListener {
                 val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
                 navController.navigate(
