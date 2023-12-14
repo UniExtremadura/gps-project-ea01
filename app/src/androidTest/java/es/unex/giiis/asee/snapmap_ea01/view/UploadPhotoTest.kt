@@ -171,7 +171,7 @@ class UploadPhotoTest {
             )
         )
 
-        Thread.sleep(10000)
+        Thread.sleep(6000)
         bottomNavigationItemView2.perform(click())
         Thread.sleep(3000)
     }
