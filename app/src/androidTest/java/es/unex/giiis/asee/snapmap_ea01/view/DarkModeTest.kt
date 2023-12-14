@@ -140,6 +140,7 @@ class DarkModeTest {
 
         Thread.sleep(2000)
         pressBack()
+        Thread.sleep(3000)
     }
 
     private fun childAtPosition(
