@@ -10,6 +10,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import androidx.test.rule.GrantPermissionRule
 import es.unex.giiis.asee.snapmap_ea01.R
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -27,11 +28,19 @@ class LoginTest {
     @JvmField
     var mActivityScenarioRule = ActivityScenarioRule(LoginActivity::class.java)
 
+    @Rule
+    @JvmField
+    var mGrantPermissionRule =
+        GrantPermissionRule.grant(
+            "android.permission.ACCESS_FINE_LOCATION",
+            "android.permission.ACCESS_COARSE_LOCATION"
+        )
+
     @Test
     fun loginTest() {
         val appCompatEditText = onView(
             allOf(
-                withId(R.id.etUsername),
+                withId(R.id.etUsername), withText("Chapi"),
                 childAtPosition(
                     childAtPosition(
                         withId(android.R.id.content),
@@ -44,11 +53,26 @@ class LoginTest {
         )
 
         Thread.sleep(2000)
-        appCompatEditText.perform(replaceText("Daniel"), closeSoftKeyboard())
+        appCompatEditText.perform(replaceText("Daniel"))
 
         val appCompatEditText2 = onView(
             allOf(
-                withId(R.id.etPassword),
+                withId(R.id.etUsername), withText("Daniel"),
+                childAtPosition(
+                    childAtPosition(
+                        withId(android.R.id.content),
+                        0
+                    ),
+                    1
+                ),
+                isDisplayed()
+            )
+        )
+        appCompatEditText2.perform(closeSoftKeyboard())
+
+        val appCompatEditText3 = onView(
+            allOf(
+                withId(R.id.etPassword), withText("erfiwn45"),
                 childAtPosition(
                     childAtPosition(
                         withId(android.R.id.content),
@@ -61,7 +85,24 @@ class LoginTest {
         )
 
         Thread.sleep(2000)
-        appCompatEditText2.perform(replaceText("12345"), closeSoftKeyboard())
+        appCompatEditText3.perform(replaceText("12345"))
+
+        val appCompatEditText4 = onView(
+            allOf(
+                withId(R.id.etPassword), withText("12345"),
+                childAtPosition(
+                    childAtPosition(
+                        withId(android.R.id.content),
+                        0
+                    ),
+                    2
+                ),
+                isDisplayed()
+            )
+        )
+
+        Thread.sleep(2000)
+        appCompatEditText4.perform(closeSoftKeyboard())
 
         val materialButton = onView(
             allOf(
@@ -94,8 +135,9 @@ class LoginTest {
             )
         )
 
-        Thread.sleep(2000)
+        Thread.sleep(5000)
         bottomNavigationItemView.perform(click())
+        Thread.sleep(3000)
     }
 
     private fun childAtPosition(
