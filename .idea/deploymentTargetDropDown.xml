@@ -18,6 +18,21 @@
           <timeTargetWasSelectedWithDropDown value="2023-12-13T09:31:28.550961700Z" />
         </State>
       </entry>
+      <entry key="DarkModeTest">
+        <State />
+      </entry>
+      <entry key="EditProfileTest">
+        <State />
+      </entry>
+      <entry key="LoginTest">
+        <State />
+      </entry>
+      <entry key="LogoutTest">
+        <State />
+      </entry>
+      <entry key="UploadPhotoTest">
+        <State />
+      </entry>
     </value>
   </component>
 </project>
