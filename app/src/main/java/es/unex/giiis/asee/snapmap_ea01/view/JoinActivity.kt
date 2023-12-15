@@ -7,9 +7,10 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import es.unex.giiis.asee.snapmap_ea01.api.getNetworkService
+import es.unex.giiis.asee.snapmap_ea01.data.Repository
 import es.unex.giiis.asee.snapmap_ea01.data.model.User
 import es.unex.giiis.asee.snapmap_ea01.database.SnapMapDatabase
-import es.unex.giiis.asee.snapmap_ea01.database.UserDao
 import es.unex.giiis.asee.snapmap_ea01.databinding.ActivityJoinBinding
 import es.unex.giiis.asee.snapmap_ea01.utils.CredentialCheck
 import es.unex.giiis.asee.snapmap_ea01.view.home.HomeActivity
@@ -19,6 +20,7 @@ import kotlinx.coroutines.launch
 class JoinActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityJoinBinding
+    private lateinit var repository: Repository
     private lateinit var db: SnapMapDatabase
 
     companion object {
@@ -44,6 +46,9 @@ class JoinActivity : AppCompatActivity() {
 
         //Database inicialization
         db = SnapMapDatabase.getInstance(applicationContext)!!
+
+        //Repository inicialization
+        repository = Repository.getInstance(db!!.userDao(), db.userUserFollowRefDao(), db.userPhotoLikeRefDao(), db.commentDao(), db.photoDao(), db.photoURIDao(),getNetworkService())
 
         setUpListeners()
     }
@@ -71,16 +76,15 @@ class JoinActivity : AppCompatActivity() {
             )
             if (check.fail) notifyInvalidCredentials(check.msg)
             else {
+                val user = User(
+                    null,
+                    etUsername.text.toString().trim(),
+                    etAboutMe.text.toString(),
+                    etEmail.text.toString(),
+                    etPassword.text.toString()
+                )
                 lifecycleScope.launch {
-                    val user = User(
-                        null,
-                        etUsername.text.toString().trim(),
-                        etAboutMe.text.toString(),
-                        etEmail.text.toString(),
-                        etPassword.text.toString()
-                    )
-                    val id = db.userDao().insertUser(user)
-
+                    val id = repository.insertUser(user)
                     navigateToHomeActivity(
                         User(
                             id,

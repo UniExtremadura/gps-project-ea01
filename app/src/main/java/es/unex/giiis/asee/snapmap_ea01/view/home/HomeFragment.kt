@@ -19,6 +19,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
@@ -37,11 +39,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import es.unex.giiis.asee.snapmap_ea01.R
 import es.unex.giiis.asee.snapmap_ea01.data.model.Photo
 import es.unex.giiis.asee.snapmap_ea01.data.model.User
-import es.unex.giiis.asee.snapmap_ea01.database.SnapMapDatabase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /**
  * A simple [Fragment] subclass.
@@ -51,9 +49,11 @@ import kotlinx.coroutines.withContext
 class HomeFragment : Fragment(), OnMapReadyCallback {
 
     //List of photos
-    private lateinit var db: SnapMapDatabase
     private var _photos: List<Photo> = emptyList()
     private var _loadedPhotos: Map<Long, ImageView> = emptyMap()
+
+    private val homeViewModel: HomeViewModel by activityViewModels()
+    private val viewModel: HomeFragmentViewModel by viewModels { HomeFragmentViewModel.Factory }
 
     //GoogleMaps variables
     private lateinit var mapView: MapView
@@ -61,7 +61,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private val LOCATION_PERMISSION_REQUEST_CODE = 1
     private val ZOOM_LEVEL = 15f
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var currentUser: User
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,17 +74,33 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
-        db = SnapMapDatabase.getInstance(requireContext())!!
-
-        currentUser = requireActivity().intent.getSerializableExtra(HomeActivity.USER_INFO) as User
-
-        getPhotos()
-
         mapView = view.findViewById(R.id.mapView)
         mapView.onCreate(savedInstanceState)
-        mapView.getMapAsync(this) // Configura el callback OnMapReady
 
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        homeViewModel.user.observe(viewLifecycleOwner) { user ->
+            viewModel.user = user
+            observePhotos()
+        }
+    }
+
+    private fun observePhotos() {
+        viewModel.photos.observe(viewLifecycleOwner) { photos ->
+            _photos = photos
+            lifecycleScope.launch {
+                getPhotos()
+                loadMap()
+            }
+        }
+    }
+
+    private fun loadMap() {
+        mapView.getMapAsync(this)
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -173,34 +188,26 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun getPhotos() {
-        // Obtiene las fotos de la base de datos y carga las imágenes con Glide
-        lifecycleScope.launch {
-            try {
-                _photos = db.photoDao().getPhotosFromFollowedUsers(currentUser.userId!!)
+        for (photo in _photos) {
+            val image = ImageView(requireContext())
 
-                for (photo in _photos) {
-                    val image = ImageView(requireContext())
+            // Utiliza SimpleTarget para esperar la carga de la imagen antes de proceder
+            Glide.with(requireContext())
+                .asBitmap()
+                .load(photo.photoURL)
+                .into(object : CustomTarget<Bitmap>() {
+                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                        // La imagen está lista, ahora puedes proceder con la copia
+                        image.setImageBitmap(resource)
+                        _loadedPhotos += Pair(photo.photoId!!, image)
+                        Log.d("getPhotos", "Loaded image for photoId ${photo.photoId}")
+                    }
 
-                    // Utiliza SimpleTarget para esperar la carga de la imagen antes de proceder
-                    Glide.with(requireContext())
-                        .asBitmap()
-                        .load(photo.photoURL)
-                        .into(object : CustomTarget<Bitmap>() {
-                            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                                // La imagen está lista, ahora puedes proceder con la copia
-                                image.setImageBitmap(resource)
-                                _loadedPhotos += Pair(photo.photoId!!, image)
-                                Log.d("getPhotos", "Loaded image for photoId ${photo.photoId}")
-                            }
-
-                            override fun onLoadCleared(placeholder: Drawable?) {
-                                // Manejar la limpieza, si es necesario
-                            }
-                        })
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+                    override fun onLoadCleared(placeholder: Drawable?) {
+                        // Manejar la limpieza, si es necesario
+                        Log.d("getPhotos", "Image cleared for photoId ${photo.photoId}")
+                    }
+                })
         }
     }
 
@@ -217,14 +224,12 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                     val image = cardView.findViewById<ImageView>(R.id.iVPhoto)
 
                     // Todo: Obtener el nombre de usuario del propietario de la foto e insertarlo al username
-                    val ownerUsername = async {
-                        db.userDao().getUserById(photo.owner)
-                    }.await()
+                    //val ownerUsername = viewModel.getOwnerPhoto(photo.owner!!)
+
+                    val ownerUsername = viewModel.getOwnerPhoto(photo.owner!!)
 
                     // Actualiza la interfaz de usuario en el hilo principal
-                    withContext(Dispatchers.Main) {
-                        username.text = ownerUsername
-                    }
+                    username.text = ownerUsername
 
                     val loadedImage = _loadedPhotos[photo.photoId]
                     if (loadedImage != null) {
@@ -263,10 +268,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             }
         }
     }
-
-
-
-
 
     //Convierte una vista a un bitmap para poder cargarlo en el mapa
     private fun viewToBitmap (view: View): Bitmap? {

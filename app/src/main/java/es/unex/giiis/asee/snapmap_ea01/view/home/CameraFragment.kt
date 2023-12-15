@@ -3,35 +3,35 @@ package es.unex.giiis.asee.snapmap_ea01.view.home
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import es.unex.giiis.asee.snapmap_ea01.R
-import es.unex.giiis.asee.snapmap_ea01.api.APIError
-import es.unex.giiis.asee.snapmap_ea01.api.getNetworkService
-import es.unex.giiis.asee.snapmap_ea01.data.model.Photo
-import es.unex.giiis.asee.snapmap_ea01.data.model.User
-import es.unex.giiis.asee.snapmap_ea01.database.SnapMapDatabase
+import es.unex.giiis.asee.snapmap_ea01.data.model.PhotoURI_DB
 import es.unex.giiis.asee.snapmap_ea01.databinding.FragmentCameraBinding
-import kotlinx.coroutines.launch
 
 class CameraFragment : Fragment() {
-    private var photo = ""
     private val LOCATION_PERMISSION_REQUEST_CODE = 1
     private lateinit var binding : FragmentCameraBinding
-    private lateinit var db: SnapMapDatabase
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    private val homeViewModel: HomeViewModel by activityViewModels()
+    private val viewModel: CameraViewModel by viewModels { CameraViewModel.Factory }
+
+    private var photosURI : List<PhotoURI_DB> = emptyList()
+    private var photo : String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = FragmentCameraBinding.inflate(layoutInflater)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
     }
@@ -42,28 +42,44 @@ class CameraFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
 
-        db = SnapMapDatabase.getInstance(requireContext())!!
-
-        updatePhoto()
         setUpListeners()
 
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        homeViewModel.user.observe(viewLifecycleOwner) { user ->
+            viewModel.user = user
+        }
+
+        viewModel.toastMessage.observe(viewLifecycleOwner) { text ->
+            text?.let {
+                Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        subscribeUI()
+    }
+
+    private fun subscribeUI(){
+        viewModel.photosURI.observe(viewLifecycleOwner) { photos ->
+            if (photos.isNotEmpty()) {
+                photosURI = photos
+                updatePhoto()
+            }
+        }
+    }
+
     private fun updatePhoto() {
         with(binding){
-            lifecycleScope.launch {
-                try{
-                    photo = fetchDog()
-                    Log.d("API", "Dog: $photo")
-                    Glide.with(requireContext())
-                        .load(photo)
-                        .placeholder(R.drawable.baseline_access_time_24)
-                        .into(iVDog)
-                } catch (e: APIError) {
-                    Log.e("MainActivity", "Error fetching dog", e)
-                }
-            }
+            //get random photo from photosURI
+            val random = (0..<photosURI.size).random()
+            photo = photosURI[random].uri
+            Glide.with(requireContext())
+                .load(photo)
+                .placeholder(R.drawable.baseline_access_time_24)
+                .into(iVDog)
         }
     }
 
@@ -76,7 +92,6 @@ class CameraFragment : Fragment() {
     }
 
     private fun uploadPhoto() {
-        val user = requireActivity().intent.getSerializableExtra(HomeActivity.USER_INFO) as User
 
         //Obtain location
         if (ActivityCompat.checkSelfPermission(
@@ -103,19 +118,7 @@ class CameraFragment : Fragment() {
                     val lon = location.longitude
 
                     // Utiliza la ubicación obtenida para crear la foto
-                    val photo = Photo(
-                        photoId = null,
-                        photoURL = photo,
-                        owner = user.userId,
-                        lat = lat,
-                        lon = lon
-                    )
-
-                    lifecycleScope.launch {
-                        val photoId = db.photoDao().insertPhoto(photo)
-                        Log.d("API", "Photo uploaded with id: $photoId")
-                    }
-                    Toast.makeText(requireContext(), "Photo uploaded", Toast.LENGTH_SHORT).show()
+                    viewModel.uploadPhoto(photo, lat, lon)
                     updatePhoto()
                 } else {
                     Toast.makeText(
@@ -125,15 +128,6 @@ class CameraFragment : Fragment() {
                     ).show()
                 }
             }
-        }
-    }
-
-    private suspend fun fetchDog(): String {
-        try {
-            return getNetworkService().getDog().uri.toString()
-        } catch (cause: Throwable) {
-            Log.e("API", "Error fetching dog", cause)
-            throw APIError("Error fetching dog", cause)
         }
     }
 }

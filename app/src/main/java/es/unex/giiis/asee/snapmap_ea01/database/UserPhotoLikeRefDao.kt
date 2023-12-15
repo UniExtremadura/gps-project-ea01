@@ -7,7 +7,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import es.unex.giiis.asee.snapmap_ea01.data.model.UserPhotoLikeRef
-import es.unex.giiis.asee.snapmap_ea01.data.model.UserUserFollowRef
 
 @Dao
 interface UserPhotoLikeRefDao {

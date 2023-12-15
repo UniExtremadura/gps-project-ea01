@@ -81,10 +81,15 @@ class FollowersAdapter(
 
     override fun getItemCount() = users.size
 
-    fun updateData(updatedUsers: List<User>, updatedFollowers: List<User>) {
-        users = updatedUsers
-        usersFollowingList.clear()
-        usersFollowingList.addAll(updatedFollowers)
+    fun updateData(updatedUsers: List<User>?, updatedFollowers: List<User>?) {
+        if (updatedUsers != null) {
+            users = updatedUsers
+        }
+
+        if (updatedFollowers != null) {
+            usersFollowingList.clear()
+            usersFollowingList.addAll(updatedFollowers)
+        }
         notifyDataSetChanged()
     }
 }

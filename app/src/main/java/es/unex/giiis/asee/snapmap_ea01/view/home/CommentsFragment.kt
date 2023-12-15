@@ -4,92 +4,92 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import es.unex.giiis.asee.snapmap_ea01.R
 import es.unex.giiis.asee.snapmap_ea01.adapters.CommentsAdapter
-import es.unex.giiis.asee.snapmap_ea01.database.SnapMapDatabase
-import es.unex.giiis.asee.snapmap_ea01.data.model.Comment
-import es.unex.giiis.asee.snapmap_ea01.data.model.User
-import kotlinx.coroutines.launch
+import es.unex.giiis.asee.snapmap_ea01.databinding.FragmentCommentsBinding
 
-private const val ARG_PHOTO_ID = "photoId"
+const val ARG_PHOTO_ID = "photoId"
 
 class CommentsFragment : Fragment() {
 
-    private var photoId: Long? = null
-    private lateinit var db: SnapMapDatabase
-    private lateinit var currentUser: User
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            photoId = it.getLong(ARG_PHOTO_ID)
-        }
-    }
+    // Referencias a la vista, el adaptador y los ViewModels
+    private lateinit var binding: FragmentCommentsBinding
+    private lateinit var commentsAdapter: CommentsAdapter
+    private val viewModel: CommentsViewModel by viewModels { CommentsViewModel.Factory }
+    private val homeViewModel: HomeViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_comments, container, false)
+    ): View {
+        binding = FragmentCommentsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        val recyclerView: RecyclerView = view.findViewById(R.id.recyclerViewComments)
-        val editTextComment: EditText = view.findViewById(R.id.editTextComment)
-        val btnAddComment: Button = view.findViewById(R.id.btnAddComment)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        // Configura el LayoutManager del RecyclerView
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        // Obtenemos el ID de la foto del argumento
+        val photoId = arguments?.getLong(ARG_PHOTO_ID) ?: -1
 
-        // Obtiene la instancia de SnapMapDatabase
-        db = SnapMapDatabase.getInstance(requireContext())!!
-
-        // Obtiene el objeto User de la actividad anterior
-        currentUser =
-            requireActivity().intent.getSerializableExtra(HomeActivity.USER_INFO) as User
-
-        lifecycleScope.launch {
-            try {
-                // Obtén la lista de comentarios para la foto actual
-                val comments = photoId?.let { db.commentDao().getCommentsForPhoto(it) }
-
-                // Configura el adaptador para el RecyclerView
-                val commentsAdapter =
-                    CommentsAdapter(comments.orEmpty(), db.userDao(), lifecycleScope)
-                recyclerView.adapter = commentsAdapter
-
-                // Configura el botón para agregar comentarios
-                btnAddComment.setOnClickListener {
-                    val newCommentText = editTextComment.text.toString()
-                    if (newCommentText.isNotEmpty()) {
-                        val newComment = Comment(
-                            author = currentUser.userId,
-                            photo = photoId!!,
-                            comment = newCommentText
-                        )
-                        // Inserta el nuevo comentario en la base de datos
-                        lifecycleScope.launch {
-                            db.commentDao().insertComment(newComment)
-                            // Actualiza la lista de comentarios en el adaptador
-                            commentsAdapter.updateComments(db.commentDao().getCommentsForPhoto(photoId!!))
-                            editTextComment.text.clear()
-                        }
-                    }
-                }
-
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+        // Observamos el usuario en homeViewModel y lo asignamos a viewModel.user
+        homeViewModel.user.observe(viewLifecycleOwner) { user ->
+            viewModel.user = user
         }
-        return view
+
+        // Configuramos el RecyclerView y el Adapter
+        commentsAdapter = CommentsAdapter()
+        binding.recyclerViewComments.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = commentsAdapter
+        }
+
+        // Observamos los comentarios asociados a una foto específica
+        observeComments(photoId)
+
+        // Establecemos el OnClickListener para el botón de añadir comentario
+        binding.btnAddComment.setOnClickListener {
+            addComment(photoId)
+        }
+    }
+
+    private fun observeComments(photoId: Long) {
+        viewModel.getCommentsForPhoto(photoId)
+        viewModel.commentsWithUser.observe(viewLifecycleOwner) { commentsWithUser ->
+            // Actualizamos el adaptador con los nuevos comentarios
+            commentsAdapter.submitList(commentsWithUser)
+        }
+    }
+
+    private fun addComment(photoId: Long) {
+        val commentText = binding.editTextComment.text.toString().trim()
+
+        // Si el comentario está vacío, mostramos un mensaje de error y salimos del método
+        if (commentText.isEmpty()) {
+            Toast.makeText(context, "El comentario no puede estar vacío", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Si el usuario es válido, añadimos el comentario
+        homeViewModel.user.value?.let { user ->
+            val userId = user.userId
+            if (userId != null) {
+                // Añadimos el comentario utilizando el ViewModel
+                viewModel.addComment(photoId, userId, commentText)
+            }
+            // Limpiamos el campo de texto del comentario
+            binding.editTextComment.text.clear()
+        } ?: run {
+            // Si el usuario no es válido, mostramos un mensaje de error
+            Toast.makeText(context, "El ID del usuario no es válido", Toast.LENGTH_SHORT).show()
+        }
     }
 
     companion object {
-        @JvmStatic
         fun newInstance(photoId: Long): CommentsFragment {
             return CommentsFragment().apply {
                 arguments = Bundle().apply {

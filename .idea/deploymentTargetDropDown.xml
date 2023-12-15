@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="deploymentTargetDropDown">
+    <value>
+      <entry key="Android">
+        <State>
+          <targetSelectedWithDropDown>
+            <Target>
+              <type value="QUICK_BOOT_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="C:\Users\Dani\.android\avd\Pixel_4_API_30.avd" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </targetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2023-12-13T09:31:28.550961700Z" />
+        </State>
+      </entry>
+      <entry key="DarkModeTest">
+        <State />
+      </entry>
+      <entry key="EditProfileTest">
+        <State />
+      </entry>
+      <entry key="LoginTest">
+        <State />
+      </entry>
+      <entry key="LogoutTest">
+        <State />
+      </entry>
+      <entry key="UploadPhotoTest">
+        <State />
+      </entry>
+    </value>
+  </component>
+</project>
